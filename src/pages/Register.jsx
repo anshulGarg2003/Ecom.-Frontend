@@ -7,9 +7,8 @@ import { Link } from "react-router-dom";
 
 const Container = styled.div`
   height: 100vh;
-  ${mobile({ height: "70vh" })}
   width: 100vw;
-  background: url("https://cdn.wallpapersafari.com/51/1/1T4NnK.jpg") center;
+  background: url("https://images.unsplash.com/photo-1558769132-cb1aea458c5e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGZhc2hpb258ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=600&q=60") center;
   background-size: cover;
   opacity: 0.8;
   display: flex;

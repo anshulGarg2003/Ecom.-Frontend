@@ -66,6 +66,7 @@ const ContactItem=styled.div`
 const Payment=styled.img`
     width: 275px;
     height: 100px;
+    ${mobile({ maxWidth: "200px"})}
 `
 
 const Footer = () => {

@@ -11,7 +11,7 @@ export const sliderdata = [
     id: 2,
     img: "https://webneel.com/sites/default/files/images/project/manyavar%20webneel%20(1).jpg",
     title: "Festive Sale!!!",
-    desc: "🌟 Embrace the season of celebration with The Scarlet Sage Shop's spectacular Festive Sale! Discover exquisite styles at unbeatable prices. Hurry, limited stock available. Don't miss out! 🌟",
+    desc: "Embrace the season of celebration with The Scarlet Sage Shop's spectacular Festive Sale! Discover exquisite styles at unbeatable prices. Hurry, limited stock available. Don't miss out!",
     bg: "f5fafd",
   },
 

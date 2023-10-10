@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { mobile } from "../responsive";
 
 const Container = styled.div`
+  margin-top:15px ;
   height: 80vh;
   width: 100%;
   display: flex;
@@ -59,9 +60,8 @@ const ImgContainer = styled.div`
 `;
 
 const Img = styled.img`
-  height: 90%;
+  width: 90%;
   ${mobile({ maxWidth: "375px", minWidth: "375px" })}
-  object-fit:"cover"
 `;
 
 const InfoContainer = styled.div`
@@ -102,7 +102,7 @@ const Slider = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setSlideIndex((prevIndex) => (prevIndex < 2 ? prevIndex + 1 : 0));
-    }, 3000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, []);

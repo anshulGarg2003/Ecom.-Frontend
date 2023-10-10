@@ -80,6 +80,7 @@ const FilterColour = styled.div`
   border-radius: 50%;
   background-color: ${(props) => props.colour};
   margin: 0px 5px;
+  ${mobile({ margin: "2px" })}
   &:hover {
     transform: scale(1.2);
     transition: all 0.5s ease-out;
