@@ -1,4 +1,4 @@
-import { publicRequest } from "../requestMethos";
+import { makeRequestWithToken, publicRequest } from "../requestMethos";
 import {
   loginSuccess,
   loginFailure,
@@ -6,26 +6,40 @@ import {
   addToWishlistSuccess,
   removeFromWishlistSuccess,
 } from "./userRedux";
-import { addCart, addOrderId } from "./newCartRedux";
+import { addCart } from "./newCartRedux";
 
-export const login = async (dispatch, user) => {
+export const login = async (dispatch, formdata) => {
   dispatch(loginStart());
   try {
-    const res = await publicRequest.post("/auth/login", user);
-    // console.log(res);
-    dispatch(loginSuccess(res.data));
-    // console.log(res.data.pendingcartId);
-    dispatch(findingCart(res.data.pendingcartId));
+    const res = await publicRequest.post("/auth/login", formdata);
+    // console.log(res.data);
+
+    await dispatch(loginSuccess(res.data));
+    console.log(res.data.pendingcartId);
+    if (!res.data.isAdmin) {
+      if (res.data.pendingcartId) {
+        await dispatch(findingCart(res.data.pendingcartId));
+      }
+    }
+    return true;
   } catch (err) {
-    dispatch(loginFailure(err.response.data));
+    console.log(err);
+    return err.response.data;
   }
 };
-export const register = async (dispatch, user) => {
+export const register = async (dispatch, formdata) => {
   try {
-    await publicRequest.post("/auth/register", user);
-    login(dispatch, user);
+    const res = await makeRequestWithToken(
+      `auth/register`,
+      "",
+      false,
+      "post",
+      formdata
+    );
+    return res.data.message;
+    // alert(res.data.message);
   } catch (err) {
-    dispatch(loginFailure(err.response.data));
+    return err.response.data;
   }
 };
 
@@ -51,54 +65,49 @@ export const removeToWishlist = async (dispatch, user) => {
 };
 
 export const addToCart = (user) => async (dispatch) => {
-  const { userId, myCartProducts, token, myCartAmount } = user;
   // console.log(myCartProducts, token, myCartAmount);
   try {
-    const response = await publicRequest.post(
-      "/carts/",
-      { myCartProducts, myCartAmount },
-      {
-        headers: {
-          token: `Bearer ${token}`,
-        },
-      }
+    const res = await makeRequestWithToken(
+      "carts/",
+      user.token,
+      false,
+      "post",
+      user
     );
+    console.log(res.data);
 
-    const Cart = response.data;
-    // console.log(Cart);
-
+    // const myCartId = res.data._id;
+    // const myUserId = user.userId;
+    // const OrderId = await dispatch(addToOrder({ myUserId, myCartId }));
     // console.log(OrderId);
-    return Cart._id;
+    // await dispatch(addToUserOrder({ myUserId, OrderId: res.data._id }));
+    return res.data._id;
   } catch (error) {
     console.error(error);
   }
 };
 
-export const addToOrder = (user) => async (dispatch) => {
-  const { myUserId, myCartId } = user;
-  try {
-    const response = await publicRequest.post("/orders/", {
-      myUserId,
-      myCartId,
-    });
+// export const addToOrder = (user) => async (dispatch) => {
+//   // console.log(user);
+//   const { myUserId } = user;
+//   try {
+//     const response = await publicRequest.post("/orders/", user);
 
-    const OrderId = response.data._id;
-    // console.log(response.data);
-    await dispatch(addToUserOrder({ myUserId, OrderId }));
-    return OrderId;
-  } catch (error) {
-    console.error(error);
-  }
-};
+//     console.log(response.data);
+//     const OrderId = response.data._id;
+//     return OrderId;
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
 
 export const addToUserOrder = (user) => async (dispatch) => {
-  const { myUserId, OrderId } = user;
   // console.log(OrderId);
   try {
     await publicRequest.post("/users/toorder", { user });
     // console.log(response);
     // console.log(OrderId)
-    await dispatch(addOrderId(OrderId));
+    // await dispatch(addOrderId(OrderId));
   } catch (error) {
     console.log(error);
   }
@@ -110,20 +119,22 @@ export const addToUserCart = (user) => async (dispatch) => {
   try {
     await publicRequest.post("/users/tocart", { user });
     // console.log(response);
+    return true;
   } catch (error) {
     console.log(error);
   }
 };
 
-export const findingCart = (user) => async (dispatch) => {
-  // console.log(user);
+export const findingCart = (userId) => async (dispatch) => {
+  console.log(userId);
   try {
-    const response = await publicRequest.get(`/carts/find?user=${user}`);
+    const response = await publicRequest.get(`/carts/find/${userId}`);
 
     const Cart = response.data;
-    // console.log(Cart);
+    console.log(Cart);
 
-    dispatch(addCart(Cart));
+    await dispatch(addCart(Cart));
+    return;
   } catch (error) {
     console.error(error);
   }

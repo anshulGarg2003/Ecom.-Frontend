@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { removeToWishlist } from "../redux/apiCall";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { NEW_URL } from "../requestMethos";
 
 const Container = styled.div`
   position: relative;
@@ -92,7 +93,7 @@ const SumProduct = (product) => {
       >
         <Product>
           <ProductImg>
-            <Img src={product.product.img} />
+            <Img src={`${NEW_URL}/${product.product.img}`} />
           </ProductImg>
           <ProductInfo>
             <ProductName>{product.product.title}</ProductName>

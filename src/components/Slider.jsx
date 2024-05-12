@@ -1,11 +1,11 @@
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@mui/icons-material";
 import { styled } from "styled-components";
-import { sliderdata } from "../data";
 import { useEffect, useState } from "react";
 import { mobile } from "../responsive";
-
+import axios from "axios";
+import { NEW_URL, publicRequest } from "../requestMethos";
 const Container = styled.div`
-  margin-top:15px ;
+  margin-top: 15px;
   height: 80vh;
   width: 100%;
   display: flex;
@@ -87,21 +87,45 @@ const Button = styled.button`
   border-radius: 5px;
 `;
 
+const Loader = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 25px;
+`;
+
 const Slider = () => {
   const [slideIndex, setSlideIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [sliderdata, setsliderdata] = useState([]);
   const handleClick = (direction) => {
     if (direction === "left") {
-      setSlideIndex(slideIndex > 0 ? slideIndex - 1 : 2);
+      setSlideIndex(slideIndex > 0 ? slideIndex - 1 : sliderdata.length - 1);
     }
 
     if (direction === "right") {
-      setSlideIndex(slideIndex < 2 ? slideIndex + 1 : 0);
+      setSlideIndex(slideIndex < sliderdata.length - 1 ? slideIndex + 1 : 0);
     }
   };
 
   useEffect(() => {
+    const getData = async () => {
+      try {
+        const res = await publicRequest.get("/sliderdata");
+        // console.log(res.data);
+        setsliderdata(res.data);
+        setLoading(false);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getData();
     const interval = setInterval(() => {
-      setSlideIndex((prevIndex) => (prevIndex < 2 ? prevIndex + 1 : 0));
+      setSlideIndex((prevIndex) =>
+        prevIndex < sliderdata.length ? prevIndex + 1 : 0
+      );
     }, 5000);
 
     return () => clearInterval(interval);
@@ -109,26 +133,45 @@ const Slider = () => {
 
   return (
     <Container>
-      <Arrow direction="left" onClick={() => handleClick("left")}>
-        <ArrowLeftOutlined />
-      </Arrow>
-      <Wrapper slideIndex={slideIndex}>
-        {sliderdata.map((item) => (
-          <Slide bg={item.bg} key={item.id}>
-            <ImgContainer>
-              <Img src={item.img}></Img>
-            </ImgContainer>
-            <InfoContainer>
-              <Title>{item.title}</Title>
-              <Desc>{item.desc}</Desc>
-              <Button>Visit Now</Button>
-            </InfoContainer>
-          </Slide>
-        ))}
-      </Wrapper>
-      <Arrow direction="right" onClick={() => handleClick("right")}>
-        <ArrowRightOutlined />
-      </Arrow>
+      {loading === true ? (
+        <Loader>
+          <img
+            src="https://cdn.pixabay.com/animation/2023/08/11/21/18/21-18-05-265_512.gif"
+            height="50px"
+            alt=""
+          />
+        </Loader>
+      ) : (
+        <>
+          <Arrow direction="left" onClick={() => handleClick("left")}>
+            <ArrowLeftOutlined />
+          </Arrow>
+
+          <Wrapper slideIndex={slideIndex}>
+            {sliderdata.map((item) => (
+              <Slide bg={item.bg} key={item.id}>
+                <ImgContainer>
+                  <Img
+                    src={
+                      item.img
+                        ? `${NEW_URL}/${item.img}`
+                        : "https://media.tenor.com/DPEfCqnChk0AAAAi/loading-slow-net.gif"
+                    }
+                  ></Img>
+                </ImgContainer>
+                <InfoContainer>
+                  <Title>{item.title}</Title>
+                  <Desc>{item.desc}</Desc>
+                  <Button>Visit Now</Button>
+                </InfoContainer>
+              </Slide>
+            ))}
+          </Wrapper>
+          <Arrow direction="right" onClick={() => handleClick("right")}>
+            <ArrowRightOutlined />
+          </Arrow>
+        </>
+      )}
     </Container>
   );
 };

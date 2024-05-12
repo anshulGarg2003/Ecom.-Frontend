@@ -14,10 +14,14 @@ import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { addToCart, addToUserCart } from "../redux/apiCall";
 import { checkout } from "../redux/newCartRedux";
+import { ToastContainer, toast } from "react-toastify";
+import { NEW_URL, makeRequestWithToken } from "../requestMethos";
 
 const Container = styled.div`
   align-items: center;
   justify-content: center;
+  z-index: 100;
+  background-color: #f9f9f9e3;
 `;
 
 const Wrapper = styled.div`
@@ -72,33 +76,90 @@ const Right = styled.div`
 
 const MenuItem = styled.span`
   margin: 10px;
-  font-size: 20px;
+  font-size: 25px;
   font-weight: 500;
   cursor: pointer;
+  border-radius: 10px;
+  padding: 5px;
+
+  &:hover {
+    scale: 1.2;
+    transition: scale 0.5s ease-in-out;
+  }
 `;
 
 const Navbar = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const cart = useSelector((state) => state.cart);
-  // console.log(cart)
+  // console.log(cart);
   const userId = user.userId;
   const history = useHistory();
   const onlogout = async () => {
-    const token = user.token;
-    const myCartProducts = cart.products;
-    const myCartAmount = cart.amount;
-    const CartId = await dispatch(
-      addToCart({ userId, myCartProducts, token, myCartAmount })
-    );
-    // await console.log(CartId, userId);
-    await dispatch(addToUserCart({ CartId, userId }));
-    dispatch(logout());
-    dispatch(checkout());
+    if (!user.isAdmin) {
+      const token = user.token;
+      const myCartProducts = cart.products;
+      const myCartAmount = cart.amount;
+      var CartId = "";
+      if (cart.CartId !== "") {
+        if (Object.keys(cart.products).length !== 0) {
+          const updateCart = async () => {
+            try {
+              const res = await makeRequestWithToken(
+                `carts/update/${cart.CartId}`,
+                user.token,
+                false,
+                "post",
+                { userId, myCartProducts, myCartAmount }
+              );
+
+              return res.data._id;
+            } catch (err) {
+              console.log(err);
+            }
+          };
+          try {
+            CartId = await updateCart();
+          } catch (err) {
+            console.error("Failed to update cart:", err);
+            CartId = null;
+          }
+        } else {
+          const deleteCart = async () => {
+            try {
+              const res = await makeRequestWithToken(
+                `carts/delete/${cart.CartId}`,
+                user.token,
+                false,
+                "delete",
+                { userId }
+              );
+              return res.data;
+            } catch (err) {
+              console.log(err);
+            }
+          };
+          if (await deleteCart()) {
+            CartId = "";
+          }
+        }
+      } else {
+        if (Object.keys(cart.products).length !== 0) {
+          CartId = await dispatch(
+            addToCart({ userId, token, myCartProducts, myCartAmount })
+          );
+        }
+      }
+      console.log(CartId);
+      await dispatch(addToUserCart({ CartId, userId }));
+      await dispatch(checkout());
+    }
+    await dispatch(logout());
     history.push("/");
+    alert("Thank You!! Please Come Again");
   };
   const handleCartClick = () => {
-    user.currentUser === null
+    user.firstname === null
       ? alert("Login First")
       : history.push(`/cart/${user.userId}`);
   };
@@ -114,7 +175,7 @@ const Navbar = () => {
           <Logo>Scarlet Sage Shop</Logo>
         </Center>
         <Right>
-          {user.currentUser === null ? (
+          {user.firstname === null ? (
             <Link
               to="/register"
               style={{ textDecoration: "none", color: "inherit" }}
@@ -123,11 +184,12 @@ const Navbar = () => {
             </Link>
           ) : (
             <MenuItem onClick={onlogout}>
-              <Logout />
+              <Logout sx={{ fontSize: 40 }} />
+              {/* <ToastContainer /> */}
             </MenuItem>
           )}
 
-          {user.currentUser === null ? (
+          {user.firstname === null ? (
             <Link
               to="/login"
               style={{ textDecoration: "none", color: "inherit" }}
@@ -136,20 +198,52 @@ const Navbar = () => {
             </Link>
           ) : (
             <Link
-              to={`/wishlist/${user.userId}`}
+              to={user.isAdmin === true ? `/admin` : `/user/${user.userId}`}
               style={{ textDecoration: "none", color: "inherit" }}
             >
               <MenuItem>
-                <AccountCircle />
+                {user.ImgUrl === "" ? (
+                  <AccountCircle sx={{ fontSize: 40 }} />
+                ) : (
+                  <div
+                    style={{
+                      display: "flex",
+                      height: "50px",
+                      width: "50px",
+                      borderRadius: "50%",
+                      overflow: "hidden",
+                      justifyContent: "center",
+                      transition: "transform 0.5s ease-in-out",
+                      ":hover": {
+                        transform: "scale(1.2)",
+                      },
+                    }}
+                  >
+                    <img
+                      src={`${NEW_URL}/${user.ImgUrl}`}
+                      alt="Profile"
+                      style={{
+                        height: "100%",
+                        width: "100%",
+                        objectFit: "cover",
+                        ":hover": {
+                          transform: "scale(1.2)",
+                        },
+                      }}
+                    />
+                  </div>
+                )}
               </MenuItem>
             </Link>
           )}
 
-          <MenuItem onClick={handleCartClick}>
-            <Badge badgeContent={cart.quantity} color="primary">
-              <ShoppingCartOutlined />
-            </Badge>
-          </MenuItem>
+          {user.isAdmin === false && (
+            <MenuItem onClick={handleCartClick}>
+              <Badge badgeContent={cart.quantity} color="primary">
+                <ShoppingCartOutlined sx={{ fontSize: 40 }} />
+              </Badge>
+            </MenuItem>
+          )}
         </Right>
       </Wrapper>
     </Container>

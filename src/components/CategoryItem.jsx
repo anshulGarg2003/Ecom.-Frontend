@@ -2,20 +2,19 @@ import React from "react";
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
 import { mobile } from "../responsive";
+import { NEW_URL } from "../requestMethos";
 
 const Container = styled.div`
   flex: 1;
   margin: 3px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  height: 70vh;
+  /* height: 60vh; */
+  margin-bottom: 6px;
   position: relative;
-  ${mobile({justifyContent:"center",display:"flex"})}
-
+  ${mobile({ justifyContent: "center", display: "flex" })}
 `;
 
 const Img = styled.img`
-  width: 90%;
+  width: 250px;
   min-height: 350px;
   max-height: 350px;
   object-fit: cover;
@@ -37,6 +36,7 @@ const Info = styled.div`
 const Title = styled.h1`
   color: white;
   margin-bottom: 20px;
+  overflow-wrap: break-word;
 `;
 
 const Button = styled.button`
@@ -52,9 +52,10 @@ const Button = styled.button`
 `;
 
 const CategoryItem = ({ item }) => {
+  // console.log(item);
   return (
     <Container>
-      <Img src={item.img}></Img>
+      <Img src={`${NEW_URL}/${item.img}`}></Img>
       <Info>
         <Title>{item.title}</Title>
         <Link to={`/products/${item.cat}`}>

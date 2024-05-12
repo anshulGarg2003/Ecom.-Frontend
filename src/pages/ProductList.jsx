@@ -7,6 +7,7 @@ import Footer from "../components/Footer";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import { mobile } from "../responsive";
+import AllProductShow from "../components/AllProductShow";
 
 const Container = styled.div``;
 const Title = styled.h1`
@@ -15,10 +16,11 @@ const Title = styled.h1`
 const FilterContainer = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
 `;
 const Filter = styled.div`
   margin: 20px;
-  ${mobile({ margin: "10px",textAlign:"center" })}
+  ${mobile({ margin: "10px", textAlign: "center" })}
 `;
 const FilterText = styled.span`
   font-size: 25px;
@@ -46,7 +48,7 @@ const Option = styled.option`
 const ProductList = () => {
   const location = useLocation();
   const cat = location.pathname.split("/")[2];
-  // console.log(cat);
+  console.log(cat);
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState("newest");
 
@@ -58,20 +60,18 @@ const ProductList = () => {
     });
   };
 
-  // console.log(filters);
-
   return (
     <Container>
       <Announcement />
       <Navbar />
-      <Title>{cat}</Title>
+      <Title>{cat.toUpperCase()}</Title>
       <FilterContainer>
         <Filter>
           <FilterText>Filter Products:</FilterText>
           <Select name="colour" onChange={handleChange}>
             <Option disabled>Colour</Option>
             <Option value="white">White</Option>
-            <Option value="balck">Black</Option>
+            <Option value="black">Black</Option>
             <Option value="red">Red</Option>
             <Option value="blue">Blue</Option>
             <Option value="yellow">Yellow</Option>
@@ -86,6 +86,21 @@ const ProductList = () => {
             <Option>XL</Option>
           </Select>
         </Filter>
+        <button
+          style={{
+            width: "15%",
+            height: "30px",
+            borderRadius: "10px",
+            border: "1px solid black",
+            cursor:"pointer"
+          }}
+          onClick={()=>{
+            setFilters({})
+            setSort("newest")
+          }}
+        >
+          Reset
+        </button>
         <Filter>
           <FilterText>Sort Products:</FilterText>
           <Select onChange={(e) => setSort(e.target.value)}>
@@ -95,7 +110,7 @@ const ProductList = () => {
           </Select>
         </Filter>
       </FilterContainer>
-      <Products cat={cat} filters={filters} sort={sort} />
+      <AllProductShow cat={cat} filters={filters} sort={sort} />
       <NewsLetter />
       <Footer />
     </Container>

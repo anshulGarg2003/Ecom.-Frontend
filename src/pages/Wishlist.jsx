@@ -1,13 +1,9 @@
 import { styled } from "styled-components";
-import Navbar from "../components/Navbar";
-import Announcement from "../components/Announcement";
-import NewsLetter from "../components/NewsLetter";
-import Footer from "../components/Footer";
 import { useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
 import { mobile } from "../responsive";
 import { Link } from "react-router-dom";
 import SumProduct from "../components/SumProduct";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const Container = styled.div`
   background-color: #fff;
@@ -73,36 +69,40 @@ const Empty = styled.div`
 `;
 
 const Wishlist = () => {
-  const location = useLocation();
-  const userId = location.pathname.split("/")[2];
   const user = useSelector((state) => state.user);
   const wishlist = user.wishlist;
   const cart = useSelector((state) => state.cart);
+  const history = useHistory();
 
   return (
     <Container>
-      <Announcement />
-      <Navbar />
       <Wrapper>
-        <Title>{user.currentUser}'s Wishlist</Title>
+        <Title>{user.firstname}'s Wishlist</Title>
         <Top>
-          <Link to="/">
+          {/* <Link to="/">
             <TopButton> Continue Shopping</TopButton>
-          </Link>
+          </Link> */}
           <TopTexts>
             <Link
-              to={`/cart/${userId}`}
+              to={`/cart/${user.userId}`}
               style={{ textDecoration: "none", color: "inherit" }}
             >
               <TopText>
                 Shopping Bag({cart.products && cart.products.length})
               </TopText>
             </Link>
-            <TopText>Your Wishlist({wishlist && wishlist.length})</TopText>
+            {/* <TopText>Your Wishlist({wishlist && wishlist.length})</TopText> */}
           </TopTexts>
-          <Link to={`/cart/${userId}`}>
-          <TopButton type="filled">Checkout Now</TopButton>
-          </Link>
+          <TopButton
+            type="filled"
+            onClick={() => history.push("/cart/${user.userId}")}
+            style={{
+              pointerEvents: cart.quantity === 0 ? "none" : "auto",
+              opacity: cart.quantity === 0 ? 0.5 : 1,
+            }}
+          >
+            Checkout
+          </TopButton>
         </Top>
 
         {wishlist && wishlist.length === 0 ? (
@@ -122,8 +122,6 @@ const Wishlist = () => {
           </Bottom>
         )}
       </Wrapper>
-      <NewsLetter />
-      <Footer />
     </Container>
   );
 };

@@ -6,19 +6,21 @@ import Footer from "../components/Footer";
 import { Add, Remove, ShoppingCartOutlined } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { publicRequest } from "../requestMethos";
+import { NEW_URL, publicRequest } from "../requestMethos";
 import { addProduct } from "../redux/newCartRedux";
 import { useDispatch, useSelector } from "react-redux";
 import { mobile } from "../responsive";
 import { addToWishlist } from "../redux/apiCall";
 import { useHistory } from "react-router-dom";
 import { addSelectProduct } from "../redux/productRedux";
+import Products from "../components/Products";
 
 const Container = styled.div``;
 const Wrapper = styled.div`
   /* width: 100vw ;  */
   display: flex;
   padding: 20px;
+  margin-bottom: 10px;
   background-color: #e0e9eb;
   ${mobile({ flexDirection: "column" })}
 `;
@@ -61,8 +63,10 @@ const FilterContainer = styled.div`
   width: 70%;
   display: flex;
   /* justify-content: space-between; */
-  margin: 20px;
-  ${mobile({ flexDirection: "column", margin: "10px 0" })}
+  margin: 10px;
+  margin-left: 0px;
+  gap: 10px;
+  ${mobile({ flexDirection: "column", margin: "10px 0" })};
 `;
 const Filter = styled.div`
   display: flex;
@@ -88,6 +92,20 @@ const FilterColour = styled.div`
     cursor: pointer;
   }
 `;
+const ColourOuterBox = styled.div`
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+  ${mobile({ width: "25px" })}
+  border-radius: 50%;
+  /* background-color:red; */
+  background-color: ${(props) => (props.selected === true ? "#111110ddd" : "")};
+  margin: 0px 5px;
+  ${mobile({ margin: "2px" })}
+`;
 const FilterSize = styled.select`
   padding: 5px;
   width: 60px;
@@ -109,14 +127,14 @@ const QuantityContainer = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 20px;
-  ${mobile({
+  /* ${mobile({
     fontSize: "20px",
     marginBottom: "10px",
-  })}/* justify-content: center; */
+  })} */
 `;
 const QuantityText = styled.h2`
   margin: 10px;
-  ${mobile({ fontSize: "20px", margin: "0" })}
+  /* ${mobile({ fontSize: "20px", margin: "0" })} */
 `;
 
 const Operation = styled.div`
@@ -172,7 +190,29 @@ const Button = styled.button`
   ${mobile({ fontSize: "15px" })}
 `;
 
+const Loader = styled.div`
+  height: 50vh;
+  font-size: 30px;
+  display: block;
+  align-items: center;
+  text-align: center;
+`;
+
+const ImgLoader = styled.img`
+  margin: 5px 5px;
+  width: 40%;
+  object-fit: cover;
+`;
+
+const Stock = styled.div`
+  display: flex;
+  font-weight: 300;
+  color: red;
+  font-size: medium;
+`;
+
 const Product = () => {
+  const [loading, setLoading] = useState(true);
   const location = useLocation();
   const id = location.pathname.split("/")[2];
   const [product, setProduct] = useState({});
@@ -183,16 +223,18 @@ const Product = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const user = useSelector((state) => state.user);
-  // const cart = useSelector((state) => state.cart);
+  const cart = useSelector((state) => state.cart);
   const myselectproduct = useSelector((state) => state.selectProduct);
   // console.log(myselectproduct)
-  // console.log(myselectproduct)
+  // console.log(loading);
   // console.log(user)
   useEffect(() => {
     const getProduct = async () => {
       try {
         const res = await publicRequest.get("/products/find/" + id);
         setProduct(res.data);
+        console.log(res.data);
+        setLoading(false);
       } catch {}
     };
     getProduct();
@@ -200,9 +242,23 @@ const Product = () => {
 
   const handleClick = () => {
     if (colour !== "" && size !== "") {
-      const price = product.price;
-      dispatch(addSelectProduct({ product, quantity, colour, size, price }));
-      setIsClick(true);
+      // Check if the product with the same ID, color, and size already exists in the cart
+      const productExists = cart.products.some(
+        (item) => item.product._id === product._id
+      );
+
+      if (quantity > product.inStock) {
+        alert("We are running sort of stocks...");
+        setQuantity(product.inStock);
+      }
+
+      if (!productExists) {
+        const price = product.price;
+        dispatch(addSelectProduct({ product, quantity, colour, size, price }));
+        setIsClick(true);
+      } else {
+        alert("This product is already in your cart");
+      }
     } else {
       alert("Select Size and Colour");
     }
@@ -219,84 +275,123 @@ const Product = () => {
 
   return (
     <Container>
-      <Announcement />
       <Navbar />
+      <Announcement />
       <Wrapper>
-        <ImageContainer>
-          <Img src={product.img} />
-        </ImageContainer>
-        <InfoContainer>
-          <Title>{product.title}</Title>
-          <Desc>{product.about}</Desc>
-          <Price>${product.price}</Price>
-          <FilterContainer>
-            <Filter>
-              <FilterText>Colour:</FilterText>
-              {product.colour &&
-                product.colour.map((c) => (
-                  <FilterColour
-                    colour={c}
-                    key={c}
-                    onClick={() => setColour(c)}
-                  />
-                ))}
-            </Filter>
+        {loading === true ? (
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Loader>
+              <p>Please wait while we are fetching...</p>
+              <ImgLoader src="https://media.tenor.com/DPEfCqnChk0AAAAi/loading-slow-net.gif" />
+            </Loader>
+          </div>
+        ) : (
+          <>
+            <ImageContainer>
+              <Img src={`${NEW_URL}/${product.img}`} />
+            </ImageContainer>
+            <InfoContainer>
+              <Title>{product.title}</Title>
+              <Desc>{product.about}</Desc>
+              <Price>
+                ${product.price}
+                {product.inStock <= 5 ? (
+                  <Stock>Hurray Up!!! Only {product.inStock} left 😯</Stock>
+                ) : (
+                  product.inStock === 0 && (
+                    <Stock>Sorr😞y We are out of stock</Stock>
+                  )
+                )}
+              </Price>
+              <FilterContainer>
+                <Filter>
+                  <FilterText>Colour:</FilterText>
+                  {product.colour &&
+                    product.colour.map((c) => (
+                      <ColourOuterBox selected={colour === c}>
+                        {console.log(colour === c, c)}
+                        <FilterColour
+                          colour={c}
+                          key={c}
+                          onClick={() => setColour(c)}
+                        />
+                      </ColourOuterBox>
+                    ))}
+                </Filter>
 
-            <Filter>
-              <FilterText>Size:</FilterText>
-              {product.size && (
-                <FilterSize onChange={(e) => setSize(e.target.value)}>
-                  {product.size.map((s) => (
-                    <FilterSizeOption key={s}>{s}</FilterSizeOption>
-                  ))}
-                </FilterSize>
-              )}
-            </Filter>
-          </FilterContainer>
+                <Filter>
+                  <FilterText>Size:</FilterText>
+                  {product.size && (
+                    <FilterSize onChange={(e) => setSize(e.target.value)}>
+                      {product.size.map((s) => (
+                        <FilterSizeOption key={s}>{s}</FilterSizeOption>
+                      ))}
+                    </FilterSize>
+                  )}
+                </Filter>
+              </FilterContainer>
 
-          <Description>{product.desc}</Description>
-          <br />
-          <Description>{product.desc}</Description>
+              <Description>{product.desc}</Description>
+              <br />
+              <Description>{product.desc}</Description>
 
-          <AddContainer>
-            <QuantityContainer>
-              <QuantityText>Select Quantity:</QuantityText>
-              <Operation>
-                <Remove
-                  onClick={() => {
-                    quantity > 1 && setQuantity(quantity - 1);
-                  }}
-                />
-              </Operation>
-              <Quantity>{quantity}</Quantity>
-              <Operation>
-                <Add
-                  onClick={() => {
-                    setQuantity(quantity + 1);
-                  }}
-                />
-              </Operation>
-            </QuantityContainer>
-            {user.currentUser === null ? (
-              <Button onClick={() => history.push("/login")}>
-                <ButtonText>Log In </ButtonText>
-              </Button>
-            ) : (
-              <ButtonContainer>
-                <Button onClick={() => handleClick()}>
-                  <ButtonText>Add To Cart</ButtonText>
-                  <Icon>
-                    <ShoppingCartOutlined />
-                  </Icon>
-                </Button>
-                <Button onClick={() => handleWishlist()}>
-                  <ButtonText>Add To Wishlist</ButtonText>
-                </Button>
-              </ButtonContainer>
-            )}
-          </AddContainer>
-        </InfoContainer>
+              <AddContainer>
+                <QuantityContainer>
+                  <QuantityText>Select Quantity:</QuantityText>
+                  <Operation>
+                    <Remove
+                      onClick={() => {
+                        quantity > 1 && setQuantity(quantity - 1);
+                      }}
+                    />
+                  </Operation>
+                  <Quantity>{quantity}</Quantity>
+                  <Operation>
+                    <Add
+                      onClick={() => {
+                        setQuantity(quantity + 1);
+                      }}
+                    />
+                  </Operation>
+                </QuantityContainer>
+                {user.firstname === null ? (
+                  <Button onClick={() => history.push("/login")}>
+                    <ButtonText>Log In </ButtonText>
+                  </Button>
+                ) : (
+                  user.isAdmin == false && (
+                    <ButtonContainer>
+                      {product.inStock !== 0 && (
+                        <Button onClick={() => handleClick()}>
+                          <ButtonText>Add To Cart</ButtonText>
+                          <Icon>
+                            <ShoppingCartOutlined />
+                          </Icon>
+                        </Button>
+                      )}
+                      <Button onClick={() => handleWishlist()}>
+                        <ButtonText>Add To Wishlist</ButtonText>
+                      </Button>
+                    </ButtonContainer>
+                  )
+                )}
+              </AddContainer>
+            </InfoContainer>
+          </>
+        )}
       </Wrapper>
+      {product.categories && <Title>More of {product.categories[0]}...</Title>}
+      {console.log(product.categories)}
+      {product.categories && <Products cat={product.categories[0]} />}
+      <Title>Trending Products</Title>
+      <Products sort={"newest"} />
       <NewsLetter />
       <Footer />
     </Container>
