@@ -1,7 +1,6 @@
 import { makeRequestWithToken, publicRequest } from "../requestMethos";
 import {
   loginSuccess,
-  loginFailure,
   loginStart,
   addToWishlistSuccess,
   removeFromWishlistSuccess,

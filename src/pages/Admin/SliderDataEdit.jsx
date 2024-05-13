@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useSyncExternalStore } from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import { useRef } from "react";
 import { IoCloseCircleOutline } from "react-icons/io5";
@@ -20,7 +20,8 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 5px;
-  justify-content: center;
+  gap: 5px;
+  /* justify-content: center; */
 `;
 
 const EditBox = styled.div`
@@ -35,18 +36,18 @@ const Wrapper = styled.div`
   display: flex;
   display: inline-flex;
   justify-content: space-around;
-  overflow-x: auto;
-  overflow-y: hidden;
+  /* overflow-x: auto; */
+  /* overflow-y: hidden; */
   white-space: wrap;
 `;
 
 const Sliderbox = styled.div`
-  width: 270px;
-  height: 400px;
+  width: 200px;
+  /* height: 500px; */
   display: flex;
   flex-direction: column;
   border: 1px solid black;
-  margin: 10px;
+  /* margin: 10px; */
   padding: 5px;
   display: flex;
   gap: 10px;
@@ -410,7 +411,8 @@ const SliderDataEdit = () => {
             <Sliderbox>
               <img
                 src={`${NEW_URL}/${item.img}`}
-                height="40%"
+                alt="sliderData"
+                height="35%"
                 style={{ margin: "5px", marginBottom: "10px" }}
               />
               <div>

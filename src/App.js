@@ -13,33 +13,28 @@ import {
   Redirect,
 } from "react-router-dom";
 import Success from "./pages/Success";
-import { useEffect, useState } from "react";
 import Admin from "./pages/Admin";
 import UserPage from "./pages/UserPage";
 // dotenv.config();
 import "react-toastify/dist/ReactToastify.css";
-import { useHistory } from "react-router-dom";
+import ErrorPage from "./pages/ErrorPage";
+import ProtectedRoute from "./pages/ProtectedRoute";
+
 
 function App() {
-  const [admin, setAdmin] = useState(false);
   const user = useSelector((state) => state.user.firstname);
-  const isAdmin = useSelector((state) => state.user.isAdmin);
-  const history = useHistory();
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    setAdmin(isAdmin);
-  }, [user, isAdmin, history]);
 
   return (
     <Router>
       <Switch>
         <Route exact path="/admin">
-          <Admin />
+          <ProtectedRoute>
+            <Admin />
+          </ProtectedRoute>
         </Route>
         <Route exact path="/">
-          {<Home />}
+          <Home />
         </Route>
-
         <Route exact path="/products/:category">
           <ProductList />
         </Route>
@@ -54,52 +49,87 @@ function App() {
           {user ? <Redirect to="/" /> : <Register />}
         </Route>
         <Route exact path={"/cart/:id"}>
-          <Cart />
+          <ProtectedRoute>
+            <Cart />
+          </ProtectedRoute>
         </Route>
         <Route exact path={"/user/:id"}>
-          <UserPage />
+          <ProtectedRoute>
+            <UserPage />
+          </ProtectedRoute>
         </Route>
         <Route exact path="/success">
-          <Success />
+          <ProtectedRoute>
+            <Success />
+          </ProtectedRoute>
         </Route>
         <Route exact path="/admin/addcategory">
-          <Admin />
+          <ProtectedRoute>
+            <Admin />
+          </ProtectedRoute>
         </Route>
         <Route exact path="/admin/addadmin">
-          <Admin />
+          <ProtectedRoute>
+            <Admin />
+          </ProtectedRoute>
         </Route>
         <Route exact path="/admin/addproduct">
-          <Admin />
+          <ProtectedRoute>
+            <Admin />
+          </ProtectedRoute>
         </Route>
         <Route exact path="/admin/editproduct">
-          <Admin />
+          <ProtectedRoute>
+            <Admin />
+          </ProtectedRoute>
         </Route>
         <Route exact path="/admin/slideredit">
-          <Admin />
+          <ProtectedRoute>
+            <Admin />
+          </ProtectedRoute>
         </Route>
         <Route exact path="/admin/editabt">
-          <Admin />
+          <ProtectedRoute>
+            <Admin />
+          </ProtectedRoute>
         </Route>
         <Route exact path="/admin/editpdt">
-          <Admin />
+          <ProtectedRoute>
+            <Admin />
+          </ProtectedRoute>
         </Route>
         <Route exact path="/admin/editprof">
-          <Admin />
+          <ProtectedRoute>
+            <Admin />
+          </ProtectedRoute>
         </Route>
         <Route exact path="/admin/editannounce">
-          <Admin />
+          <ProtectedRoute>
+            <Admin />
+          </ProtectedRoute>
         </Route>
         <Route exact path="/admin/setting">
-          <Admin />
+          <ProtectedRoute>
+            <Admin />
+          </ProtectedRoute>
         </Route>
         <Route exact path="/admin/post">
-          <Admin />
+          <ProtectedRoute>
+            <Admin />
+          </ProtectedRoute>
         </Route>
         <Route exact path="/admin/media">
-          <Admin />
+          <ProtectedRoute>
+            <Admin />
+          </ProtectedRoute>
         </Route>
         <Route exact path="/admin/contact">
-          <Admin />
+          <ProtectedRoute>
+            <Admin />
+          </ProtectedRoute>
+        </Route>
+        <Route exact path="/*">
+          <ErrorPage />
         </Route>
       </Switch>
     </Router>

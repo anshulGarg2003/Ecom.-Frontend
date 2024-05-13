@@ -65,51 +65,99 @@ const Sidebar = () => {
           Dashboard
         </Title>
         <List>
-          <Item onClick={()=>{history.push("/admin/editpdt")}}>
+          <Item
+            onClick={() => {
+              history.push("/admin/editpdt");
+            }}
+          >
             <TbShoppingBagEdit size={30} />
             Edit Product Details
           </Item>
-          <Item onClick={()=>{history.push("/admin/editabt")}}>
-            <FaEdit size={30} />
-            Change About
-          </Item>
-          <Item onClick={()=>{history.push("/admin/editprof")}}>
+          <Item
+            onClick={() => {
+              history.push("/admin/editprof");
+            }}
+          >
             <FaUserEdit size={30} />
             Change Profile Details
           </Item>
-          <Item onClick={()=>{history.push("/admin/editannounce")}}>
+          <Item
+            onClick={() => {
+              history.push("/admin/editannounce");
+            }}
+          >
             <TfiAnnouncement size={30} />
             Edit Announcements
           </Item>
-          <Item onClick={()=>{history.push("/admin/addproduct")}}>
+          <Item
+            onClick={() => {
+              history.push("/admin/addproduct");
+            }}
+          >
             <MdAddBusiness size={30} />
             Add Product
           </Item>
-          <Item onClick={()=>{history.push("/admin/slideredit")}}>
+          <Item
+            onClick={() => {
+              history.push("/admin/slideredit");
+            }}
+          >
             <BsSliders size={30} />
             Change Slider
           </Item>
-          <Item onClick={()=>{history.push("/admin/addcategory")}}>
+          <Item
+            onClick={() => {
+              history.push("/admin/addcategory");
+            }}
+          >
             <MdCategory size={30} />
             Change Category
           </Item>
-          <Item onClick={()=>{history.push("/admin/addadmin")}}>
+          <Item
+            onClick={() => {
+              history.push("/admin/addadmin");
+            }}
+          >
             <IoIosContacts size={30} />
             Add Admin
           </Item>
-          <Item onClick={()=>{history.push("/admin/setting")}}>
+          <Item
+            onClick={() => {
+              history.push("/admin/editabt");
+            }}
+          >
+            <FaEdit size={30} />
+            Change About
+          </Item>
+          <Item
+            onClick={() => {
+              history.push("/admin/setting");
+            }}
+          >
             <TbSettingsCog size={30} />
             Setting
           </Item>
-          <Item onClick={()=>{history.push("/admin/post")}}>
+          <Item
+            onClick={() => {
+              history.push("/admin/post");
+            }}
+          >
             <SiApostrophe size={30} />
             Posts
-          </Item >
-          <Item onClick={()=>{history.push("/admin/media")}}>
+          </Item>
+          <Item
+            onClick={() => {
+              history.push("/admin/media");
+            }}
+          >
             <MdOutlinePermMedia size={30} />
             Media
           </Item>
-          <Item onClick={()=>{history.push("/admin/contact")}}>
+          <Item
+            onClick={() => {
+              history.push("/admin/contact");
+            }}
+          >
             <TiContacts size={30} />
             Contact Us
           </Item>

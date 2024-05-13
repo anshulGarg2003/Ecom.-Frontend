@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
-import { register } from "../../redux/apiCall";
-import {
-  NEW_URL,
-  makeRequestWithToken,
-  publicRequest,
-} from "../../requestMethos";
+import { NEW_URL, makeRequestWithToken } from "../../requestMethos";
 import { FaAddressCard } from "react-icons/fa";
 import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -128,8 +123,9 @@ const EditAdminDetails = () => {
   const admin = true;
   const [showFileInput, setShowFileInput] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [currentImg, setCurrentImg] = useState(null);
   const user = useSelector((state) => state.user);
-  const dispatch=useDispatch()
+  const dispatch = useDispatch();
   // console.log(token);
 
   // useEffect(() => {
@@ -152,7 +148,7 @@ const EditAdminDetails = () => {
     setConfirmPassword(user.password);
     setEmail(user.email);
     setImageUrl(user.ImgUrl);
-    setImage(user.ImgUrl);
+    setCurrentImg(user.ImgUrl);
     setShowFileInput(true);
   }, [user, loading]);
 
@@ -161,6 +157,7 @@ const EditAdminDetails = () => {
     const url = URL.createObjectURL(file);
     setImageUrl(url);
     setImage(file);
+    setCurrentImg(null);
   };
 
   const handleRemove = (e) => {
@@ -207,7 +204,7 @@ const EditAdminDetails = () => {
       );
       setLoading(false);
       dispatch(loginSuccess(res.data.user));
-      console.log(res)
+      console.log(res);
       alert(res?.data.message);
     } catch (err) {
       console.log(err);
@@ -238,19 +235,28 @@ const EditAdminDetails = () => {
         <DetailsBox>
           <ImgBox>
             <Img>
-              {imageUrl && (
+              {currentImg !== null ? (
                 <img
-                  src={`${NEW_URL}/${imageUrl}`}
+                  src={`${NEW_URL}/${currentImg}`}
+                  alt="Current"
+                  height="200px"
+                  width="200px"
+                />
+              ) : imageUrl !== null ? (
+                <img
+                  src={imageUrl}
                   alt="Selected"
                   height="200px"
                   width="200px"
                 />
-              )}
-              {showFileInput === false ? (
-                <FaAddressCard size={100} />
               ) : (
-                <input type="file" onChange={handleImageChange} />
+                <FaAddressCard size={100} />
               )}
+              <input
+                type="file"
+                onChange={handleImageChange}
+                ref={fileInputRef}
+              />
             </Img>
             <div style={{ display: "flex" }}>
               <button

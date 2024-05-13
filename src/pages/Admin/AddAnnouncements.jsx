@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { makeRequestWithToken, publicRequest } from "../../requestMethos";
 
@@ -90,7 +90,7 @@ const AddAnnouncements = () => {
       }
     };
     fetchUserData();
-  }, [currentAnnounce,announce,loading]);
+  }, [currentAnnounce, announce, loading]);
 
   const handleSave = async () => {
     setLoading(true);
@@ -111,7 +111,7 @@ const AddAnnouncements = () => {
         formdata
       );
       setLoading(false);
-      console.log(res)
+      console.log(res);
       alert(res?.data.message);
     } catch (err) {
       console.log(err);

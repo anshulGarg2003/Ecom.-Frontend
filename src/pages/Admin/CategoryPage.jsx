@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useSyncExternalStore } from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import { useRef } from "react";
 import {
@@ -207,12 +207,13 @@ const CategoryPage = () => {
 
   const handleDelete = (item) => {
     setLoading(true);
+    console.log(item);
 
     const getData = async () => {
       try {
-        console.log(item._id);
+        // console.log(item._id);
         const res = await makeRequestWithToken(
-          `/categorydata/delete/${item._id}`,
+          `categorydata/delete/${item._id}`,
           user.token,
           user.isAdmin,
           "delete"
@@ -383,6 +384,7 @@ const CategoryPage = () => {
             <CategoryBox>
               <img
                 src={`${NEW_URL}/${item.img}`}
+                alt="CategoryImg"
                 height="55%"
                 width="200px"
                 style={{ margin: "5px", marginBottom: "10px" }}

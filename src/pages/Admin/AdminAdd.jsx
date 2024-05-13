@@ -1,11 +1,6 @@
-import React, { useEffect, useState, useSyncExternalStore } from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
-import { register } from "../../redux/apiCall";
-import {
-  NEW_URL,
-  makeRequestWithToken,
-  publicRequest,
-} from "../../requestMethos";
+import { NEW_URL, makeRequestWithToken } from "../../requestMethos";
 import { FaAddressCard } from "react-icons/fa";
 import { useSelector } from "react-redux";
 
@@ -155,11 +150,11 @@ const AdminAdd = () => {
     setLoading(true);
     if (item.firstname === user.firstname) {
       alert("You can't delete the login admin");
-      setLoading(false );
+      setLoading(false);
       return;
     }
     const answer = prompt("Enter the admin's name you want to delete");
-    if (answer == item.firstname) {
+    if (answer === item.firstname) {
       const res = await makeRequestWithToken(
         `users/delete/${item._id}`,
         user.token,

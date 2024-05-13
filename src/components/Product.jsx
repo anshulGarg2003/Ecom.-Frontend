@@ -111,7 +111,7 @@ const Product = ({ item }) => {
               <VisibilityOutlined />
             </Link>
           </Icons>
-          {user.isAdmin == false && (
+          {user.isAdmin === false && (
             <Icons onClick={handleClick}>
               <FavoriteBorderOutlined />
             </Icons>

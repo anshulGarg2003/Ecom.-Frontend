@@ -2,7 +2,6 @@ import { ArrowLeftOutlined, ArrowRightOutlined } from "@mui/icons-material";
 import { styled } from "styled-components";
 import { useEffect, useState } from "react";
 import { mobile } from "../responsive";
-import axios from "axios";
 import { NEW_URL, publicRequest } from "../requestMethos";
 const Container = styled.div`
   margin-top: 15px;

@@ -83,6 +83,7 @@ const FilterColour = styled.div`
   ${mobile({ width: "25px" })}
   border-radius: 50%;
   background-color: ${(props) => props.colour};
+  border: ${(props) => (props.selected ? "5px solid #ab9c9c" : "0px")};
   margin: 0px 5px;
   ${mobile({ margin: "2px" })}
   &:hover {
@@ -92,20 +93,7 @@ const FilterColour = styled.div`
     cursor: pointer;
   }
 `;
-const ColourOuterBox = styled.div`
-  width: 30px;
-  height: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid black;
-  ${mobile({ width: "25px" })}
-  border-radius: 50%;
-  /* background-color:red; */
-  background-color: ${(props) => (props.selected === true ? "#111110ddd" : "")};
-  margin: 0px 5px;
-  ${mobile({ margin: "2px" })}
-`;
+
 const FilterSize = styled.select`
   padding: 5px;
   width: 60px;
@@ -315,14 +303,12 @@ const Product = () => {
                   <FilterText>Colour:</FilterText>
                   {product.colour &&
                     product.colour.map((c) => (
-                      <ColourOuterBox selected={colour === c}>
-                        {console.log(colour === c, c)}
-                        <FilterColour
-                          colour={c}
-                          key={c}
-                          onClick={() => setColour(c)}
-                        />
-                      </ColourOuterBox>
+                      <FilterColour
+                        colour={c}
+                        key={c}
+                        onClick={() => setColour(c)}
+                        selected={colour === c}
+                      />
                     ))}
                 </Filter>
 
@@ -366,7 +352,7 @@ const Product = () => {
                     <ButtonText>Log In </ButtonText>
                   </Button>
                 ) : (
-                  user.isAdmin == false && (
+                  user.isAdmin === false && (
                     <ButtonContainer>
                       {product.inStock !== 0 && (
                         <Button onClick={() => handleClick()}>

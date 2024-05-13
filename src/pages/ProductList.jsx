@@ -1,7 +1,6 @@
 import { styled } from "styled-components";
 import Navbar from "../components/Navbar";
 import Announcement from "../components/Announcement";
-import Products from "../components/Products";
 import NewsLetter from "../components/NewsLetter";
 import Footer from "../components/Footer";
 import { useLocation } from "react-router-dom";

@@ -6,10 +6,8 @@ import Products from "../components/Products";
 import NewsLetter from "../components/NewsLetter";
 import Footer from "../components/Footer";
 import { styled } from "styled-components";
-import { useSelector } from "react-redux";
 import React from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import CategorySlider from "../components/CategorySlider";
 
 const Title = styled.h1`
   margin: 20px;

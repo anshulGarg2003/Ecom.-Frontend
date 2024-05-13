@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
 // import { register } from "../../redux/apiCall";
-import { NEW_URL, makeRequestWithToken, publicRequest } from "../requestMethos";
+import { NEW_URL, makeRequestWithToken } from "../requestMethos";
 import { FaAddressCard } from "react-icons/fa";
 import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { loginSuccess } from "../redux/userRedux";
-import Navbar from "../components/Navbar";
-import Announcement from "../components/Announcement";
-import NewsLetter from "../components/NewsLetter";
-import Footer from "../components/Footer";
-
 const Title = styled.h1`
   margin: 5px;
   margin-left: 10px;

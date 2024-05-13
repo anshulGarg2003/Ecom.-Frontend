@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { styled } from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
 import Navbar from "../components/Navbar";
 import Announcement from "../components/Announcement";
 import NewsLetter from "../components/NewsLetter";
@@ -18,16 +17,6 @@ const Title = styled.h1`
   margin: 20px;
   display: flex;
   justify-content: space-between;
-`;
-
-const Container = styled.div`
-  height: 300px;
-  margin: 10px;
-  display: flex;
-  flex-direction: column;
-  border: 2px solid black;
-  border-radius: 5px;
-  justify-content: center;
 `;
 
 const LowerNav = styled.div`
@@ -59,8 +48,6 @@ const Button = styled.button`
 
 const UserPage = () => {
   // const [image, setImage] = useState(null);
-  const user = useSelector((state) => state.user);
-  const dispatch = useDispatch();
   const [tag, setTag] = useState("profile");
   const history = useHistory();
 

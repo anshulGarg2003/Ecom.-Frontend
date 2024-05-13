@@ -60,59 +60,58 @@ const Button = styled.button`
 `;
 
 const Address = () => {
-    const user = useSelector((state) => state.user);
-    const [add, setAdd] = useState(false);
-    const [userAddress, setUserAddress] = useState([]);
-    const [addNewAddress, setAddNewAddress] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [selectedAddress, setSelectedAddress] = useState("");
-    const [pincode, setPincode] = useState("");
-    const dispatch = useDispatch();
-    const handleDelete = async (index) => {
-      setLoading(true);
-      try {
-        const res = await publicRequest.put(
-          `/users/deleteaddress/${user.userId}`,
-          { index }
-        );
-        alert(res.data.message);
-        setLoading(false);
-      } catch (err) {
-        console.log(err);
-      }
-    };
+  const user = useSelector((state) => state.user);
+  const [add, setAdd] = useState(false);
+  const [userAddress, setUserAddress] = useState([]);
+  const [addNewAddress, setAddNewAddress] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [pincode, setPincode] = useState("");
+  const dispatch = useDispatch();
+  const handleDelete = async (index) => {
+    setLoading(true);
+    try {
+      const res = await publicRequest.put(
+        `/users/deleteaddress/${user.userId}`,
+        { index }
+      );
+      alert(res.data.message);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-    const handleSave = async () => {
-      setLoading(true);
-      if (addNewAddress === "") {
-        alert("Please Enter Address");
-        setLoading(false);
-        return;
-      }
-      console.log(pincode);
-      if (pincode === "" || pincode.length > 6 || !/^\d+$/.test(pincode)) {
-        alert("Please Enter Correct Pincode");
-        setLoading(false);
-        return;
-      }
+  const handleSave = async () => {
+    setLoading(true);
+    if (addNewAddress === "") {
+      alert("Please Enter Address");
+      setLoading(false);
+      return;
+    }
+    console.log(pincode);
+    if (pincode === "" || pincode.length > 6 || !/^\d+$/.test(pincode)) {
+      alert("Please Enter Correct Pincode");
+      setLoading(false);
+      return;
+    }
 
-      const finalAddress = addNewAddress + "," + pincode;
-      try {
-        const formdata = new FormData();
-        formdata.append("newAddress", finalAddress);
-        const res = await publicRequest.post(
-          `/users/addaddress/${user.userId}`,
-          formdata
-        );
-        // console.log(res);
-        alert(res.data.message);
-        setLoading(false);
-        setAdd(false);
-        setAddNewAddress("");
-      } catch (err) {
-        console.log(err);
-      }
-    };
+    const finalAddress = addNewAddress + "," + pincode;
+    try {
+      const formdata = new FormData();
+      formdata.append("newAddress", finalAddress);
+      const res = await publicRequest.post(
+        `/users/addaddress/${user.userId}`,
+        formdata
+      );
+      // console.log(res);
+      alert(res.data.message);
+      setLoading(false);
+      setAdd(false);
+      setAddNewAddress("");
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const handleSelect = (address) => {
     dispatch(addAddress(address));
@@ -130,7 +129,7 @@ const Address = () => {
     };
 
     getAddress(); // Call the getAddress function here
-  }, [loading]);
+  }, [loading, user.userId]);
 
   return (
     <>

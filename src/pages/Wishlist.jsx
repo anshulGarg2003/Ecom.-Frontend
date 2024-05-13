@@ -26,7 +26,7 @@ const TopButton = styled.button`
   border: 1px solid;
   border: ${(props) => props.type === "filled" && "none"};
   background-color: ${(props) =>
-    props.type == "filled" ? "black" : "transparent"};
+    props.type === "filled" ? "black" : "transparent"};
   color: ${(props) => props.type === "filled" && "white"};
   font-size: 15px;
   margin: 10px;
@@ -95,7 +95,7 @@ const Wishlist = () => {
           </TopTexts>
           <TopButton
             type="filled"
-            onClick={() => history.push("/cart/${user.userId}")}
+            onClick={() => history.push(`/cart/${user.userId}`)}
             style={{
               pointerEvents: cart.quantity === 0 ? "none" : "auto",
               opacity: cart.quantity === 0 ? 0.5 : 1,

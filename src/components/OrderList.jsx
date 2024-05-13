@@ -2,7 +2,6 @@ import { styled } from "styled-components";
 
 import { useSelector } from "react-redux";
 import { mobile } from "../responsive";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { useEffect, useState } from "react";
 import { makeRequestWithToken, publicRequest } from "../requestMethos";
 import SingleCart from "./SingleCart";
@@ -37,7 +36,6 @@ const Empty = styled.div`
 
 const OrderList = () => {
   const user = useSelector((state) => state.user);
-  const history = useHistory();
   const [orderList, setOrderList] = useState([]);
   const [carts, setCarts] = useState([]);
   const [selectedCart, setSelectedCart] = useState(null);

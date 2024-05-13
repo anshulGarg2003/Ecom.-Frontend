@@ -1,7 +1,6 @@
 import Navbar from "../components/Navbar";
 import NewsLetter from "../components/NewsLetter";
 import Footer from "../components/Footer";
-import { styled } from "styled-components";
 import Sidebar from "../components/Admin/Sidebar";
 import AdminLayout from "../components/Admin/AdminLayout";
 import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
@@ -11,12 +10,9 @@ import ProductEdit from "./Admin/ProductEdit";
 import SliderDataEdit from "./Admin/SliderDataEdit";
 import EditAdminDetails from "./Admin/EditAdminDetail";
 import AddAnnouncements from "./Admin/AddAnnouncements";
+import StayTune from "./Admin/StayTune";
 import { useEffect, useState } from "react";
 import AdminAdd from "./Admin/AdminAdd";
-
-const Title = styled.h1`
-  margin: 20px;
-`;
 
 const Admin = () => {
   const location = useLocation();
@@ -59,7 +55,7 @@ const Admin = () => {
           ) : tag === "editpdt" ? (
             <ProductEdit />
           ) : tag === "editabt" ? (
-            <ProductEdit />
+            <StayTune />
           ) : tag === "editprof" ? (
             <EditAdminDetails />
           ) : tag === "editannounce" ? (
@@ -69,13 +65,13 @@ const Admin = () => {
           ) : tag === "slideredit" ? (
             <SliderDataEdit />
           ) : tag === "setting" ? (
-            <SliderDataEdit />
+            <StayTune />
           ) : tag === "post" ? (
-            <SliderDataEdit />
+            <StayTune />
           ) : tag === "media" ? (
-            <SliderDataEdit />
+            <StayTune />
           ) : tag === "contact" ? (
-            <SliderDataEdit />
+            <StayTune />
           ) : (
             <AdminLayout />
           )}

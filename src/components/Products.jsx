@@ -2,7 +2,6 @@ import { styled } from "styled-components";
 import Product from "./Product";
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 const NEW_URL = "http://localhost:5000";
 const Container = styled.div`
@@ -43,11 +42,6 @@ const ArrowIcon = styled.div`
   color: #000;
 `;
 
-const Content = styled.div`
-  display: flex;
-  gap: 5px;
-`;
-
 const Loader = styled.div`
   height: 50vh;
   width: 100vw;
@@ -64,23 +58,12 @@ const Img = styled.img`
   object-fit: cover;
 `;
 
-const ProductBox = styled.div`
-  display: flex;
-  flex: 1;
-  margin: 5px;
-  min-width: 253px;
-  height: 60vh;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-`;
-
 const Products = ({ cat, filters, sort }) => {
   const [loading, setLoading] = useState(true);
   const [newproducts, setNewproducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const history = useHistory();
+  // const [isDone, setIsDone] = useEffect(true);
+
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -115,7 +98,7 @@ const Products = ({ cat, filters, sort }) => {
       }
     };
     filterProducts();
-  }, [cat, filters, newproducts]);
+  }, [cat, filters, loading]);
 
   useEffect(() => {
     const sortProducts = () => {
@@ -136,7 +119,7 @@ const Products = ({ cat, filters, sort }) => {
       }
     };
     sortProducts();
-  }, [ sort]);
+  }, [sort, loading]);
 
   const scroll = (direction) => {
     const container = containerRef.current;

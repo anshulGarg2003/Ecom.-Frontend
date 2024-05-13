@@ -29,13 +29,8 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: 50px;
-  opacity: 0;
-  cursor: pointer;
-
-  &:hover {
-    opacity: 1;
-    transition: opacity 0.5s ease-in;
-  }
+  opacity: 1;
+  cursor: pointer;  
 `;
 
 const Title = styled.h1`
@@ -78,15 +73,6 @@ const Error = styled.span`
   color: red;
 `;
 
-const BackgroudImgBox = styled.div`
-  display: flex;
-  flex: 6;
-  background: #b15757;
-`;
-
-const SliderImg = styled.img`
-  object-fit: "cover";
-`;
 
 const Login = () => {
   // const navigate=UseNavigate()

@@ -1,9 +1,4 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useSyncExternalStore,
-} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { styled } from "styled-components";
 import { FaRupeeSign } from "react-icons/fa";
 import { HiMiniWallet } from "react-icons/hi2";
@@ -48,24 +43,6 @@ const ImgBox = styled.div`
   flex-direction: column;
   gap: 5px;
   /* border: 1px solid black; */
-`;
-
-const Img = styled.div`
-  height: 70%;
-  margin: 3px;
-  width: 80%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid black;
-  border-radius: 10px;
-
-  img {
-    top: 0;
-    left: 0;
-    object-fit: cover;
-  }
 `;
 
 const InfoBox = styled.div`
@@ -207,7 +184,7 @@ const ProductEdit = () => {
 
   const handleDeleteProduct = () => {
     setLoading(true);
-    if (id == "") {
+    if (id === "") {
       alert("Please select the product");
       setLoading(false);
       return;

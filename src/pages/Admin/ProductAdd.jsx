@@ -1,11 +1,6 @@
-import React, { useState, useSyncExternalStore } from "react";
+import React, { useState } from "react";
 import { styled } from "styled-components";
-import { register } from "../../redux/apiCall";
-import {
-  NEW_URL,
-  makeRequestWithToken,
-  publicRequest,
-} from "../../requestMethos";
+import { makeRequestWithToken } from "../../requestMethos";
 import { FaAddressCard } from "react-icons/fa";
 import { useSelector } from "react-redux";
 

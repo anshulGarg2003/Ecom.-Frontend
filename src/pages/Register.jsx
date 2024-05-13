@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { login, register } from "../redux/apiCall";
 import { mobile } from "../responsive";
 import { styled } from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { FaAddressCard } from "react-icons/fa";
-import { NEW_URL, publicRequest } from "../requestMethos";
+import { publicRequest } from "../requestMethos";
 
 const Container = styled.div`
   display: flex;
@@ -108,15 +108,6 @@ const Error = styled.span`
   color: red;
 `;
 
-const SliderWrapper = styled.div`
-  height: 100%;
-  display: flex;
-  transition: all 1s ease;
-  position: relative;
-  overflow: hidden;
-  transform: translateX(${(props) => props.slideIndex * -100}vw);
-`;
-
 const SliderImg = styled.img`
   object-fit: "cover";
 `;
@@ -193,7 +184,7 @@ const Register = () => {
       formdata.append("isAdmin", admin);
       formdata.append("image", image);
       const res = await register(dispatch, formdata);
-      if (res == "Added successfully") {
+      if (res === "Added successfully") {
         await login(dispatch, {
           username: username,
           passi: password,
@@ -296,7 +287,7 @@ const Register = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </Form>
-          {{ loading } == true ? (
+          {loading === true ? (
             <span style={{ color: "green" }}>Please Wait...</span>
           ) : (
             { error } && <Error>{error}</Error>

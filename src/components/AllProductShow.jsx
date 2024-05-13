@@ -2,8 +2,8 @@ import { styled } from "styled-components";
 import Product from "./Product";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-const NEW_URL = "http://localhost:5000";
+import { NEW_URL } from "../requestMethos";
+
 const Container = styled.div`
   padding: 5px;
   display: flex;
@@ -66,7 +66,7 @@ const AllProductShow = ({ cat, filters, sort }) => {
         )
       );
     }
-  }, [cat, filters]);
+  }, [newproducts, cat, filters]);
 
   useEffect(() => {
     if (sort === "newest") {
@@ -82,7 +82,7 @@ const AllProductShow = ({ cat, filters, sort }) => {
         [...prev].sort((a, b) => b.price - a.price)
       );
     }
-  }, [sort]);
+  }, [filteredProducts, sort]);
   return (
     <Container>
       {loading === true ? (

@@ -45,9 +45,9 @@ const TopButton = styled.button`
   cursor: pointer;
   /* align-items: center; */
   border: 1px solid;
-  border: ${(props) => props.type == "filled" && "none"};
+  border: ${(props) => props.type === "filled" && "none"};
   background-color: ${(props) =>
-    props.type == "filled" ? "black" : "transparent"};
+    props.type === "filled" ? "black" : "transparent"};
   color: ${(props) => props.type === "filled" && "white"};
   font-size: 15px;
   margin: 10px;
@@ -119,7 +119,7 @@ const IconBox = styled.div`
   border-radius: 45px;
   padding: 10px;
   background-color: ${(props) =>
-    props.filled == true ? "#e1c984" : "inherit"};
+    props.filled === true ? "#e1c984" : "inherit"};
 `;
 
 const MidwayLine = styled.div`

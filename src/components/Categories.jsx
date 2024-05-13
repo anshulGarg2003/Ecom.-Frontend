@@ -8,7 +8,8 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 const Container = styled.div`
   display: flex;
   padding: 10px;
-  justify-content: space-between;
+  /* width: 100%; */
+  justify-content: space-around;
   gap: 5px;
   overflow-x: auto;
   /* scroll-behavior: smooth; */

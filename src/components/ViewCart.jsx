@@ -30,14 +30,6 @@ const Info = styled.div`
   padding-right: 10px;
 `;
 
-const Empty = styled.div`
-  display: flex;
-  height: 50vh;
-  text-align: center;
-  margin: 10px;
-  justify-content: center;
-  align-items: center;
-`;
 
 const ProductImg = styled.div`
   flex: 1;
