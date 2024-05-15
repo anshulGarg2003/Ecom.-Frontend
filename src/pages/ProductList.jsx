@@ -91,11 +91,11 @@ const ProductList = () => {
             height: "30px",
             borderRadius: "10px",
             border: "1px solid black",
-            cursor:"pointer"
+            cursor: "pointer",
           }}
-          onClick={()=>{
-            setFilters({})
-            setSort("newest")
+          onClick={() => {
+            setFilters({});
+            setSort("");
           }}
         >
           Reset

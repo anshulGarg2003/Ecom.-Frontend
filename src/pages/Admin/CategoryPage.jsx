@@ -7,6 +7,8 @@ import {
   publicRequest,
 } from "../../requestMethos";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
+import { FaAddressCard } from "react-icons/fa";
 
 const Title = styled.h1`
   margin: 5px;
@@ -162,6 +164,7 @@ const CategoryPage = () => {
   const [cat, setCat] = useState("");
   const [loading, setLoading] = useState(false);
   const [editId, setEditId] = useState("");
+  const [currentImg, setCurrentImg] = useState(null);
   const admin = true;
   const fileInputRef = useRef(null);
   const user = useSelector((state) => state.user);
@@ -186,64 +189,64 @@ const CategoryPage = () => {
     const url = URL.createObjectURL(file);
     setImageUrl(url);
     setImage(file);
+    setCurrentImg(null);
   };
 
   const handleRemove = (e) => {
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+    if (imageUrl) {
+      setImageUrl(null);
     }
-
-    setImageUrl(null);
-    setImage(null);
   };
 
   const handleChooseData = (item) => {
     setEditId(item._id);
     setTitle(item.title);
     setCat(item.cat);
-    setImageUrl(item.img);
-    setImage(item.img);
+    setCurrentImg(item.img);
   };
 
   const handleDelete = (item) => {
     setLoading(true);
-    console.log(item);
-
-    const getData = async () => {
-      try {
-        // console.log(item._id);
-        const res = await makeRequestWithToken(
-          `categorydata/delete/${item._id}`,
-          user.token,
-          user.isAdmin,
-          "delete"
-        );
-        console.log(res.data);
-        alert("Delete Successfully");
-        // setCategoryData(res.data);
-        setLoading(false);
-      } catch (err) {
-        alert(err.response.data.message || "Error occurred while editing");
-        console.log(err);
+    toast.promise(
+      makeRequestWithToken(
+        `categorydata/delete/${item._id}`,
+        user.token,
+        user.isAdmin,
+        "delete"
+      ),
+      {
+        loading: "Saving...",
+        success: (res) => {
+          setLoading(false);
+          return <b>Delete Successfully!!</b>;
+        },
+        error: (err) => {
+          setLoading(false);
+          console.error(err);
+          return (
+            <b>
+              {err.response.data.message || "Error occurred while deleting"}
+            </b>
+          );
+        },
       }
-    };
-    getData();
+    );
   };
 
   const handleAddNew = () => {
     handleAddCategory();
   };
 
-  const handleAddCategory = async () => {
+  const handleAddCategory = () => {
     setLoading(true);
     if (title === "" || cat === "") {
-      alert("Fill Up Entries first");
+      toast.error("Fill Up Entries first");
       setLoading(false);
       return;
     }
 
     if (!image) {
-      alert("Add the Image");
+      toast.error("Add the Image");
       setLoading(false);
       return;
     }
@@ -255,54 +258,76 @@ const CategoryPage = () => {
     formdata.append("image", image);
 
     if (editId === "") {
-      try {
-        const res = await makeRequestWithToken(
+      toast.promise(
+        makeRequestWithToken(
           "categorydata/add",
           user.token,
           user.isAdmin,
           "post",
           formdata
-        );
-        console.log(res);
-        setLoading(false);
-        alert(res.data.message);
-      } catch (err) {
-        console.log(err);
-        setLoading(false);
-        alert(err.response.data.message || "Error occurred while editing");
-      }
+        ),
+        {
+          loading: "Saving...",
+          success: (res) => {
+            setLoading(false);
+            setTitle("");
+            setCat("");
+            handleRemove();
+            setEditId("");
+            return <b>{res.data.message}</b>;
+          },
+          error: (err) => {
+            setLoading(false);
+            console.log(err);
+            return (
+              <b>
+                {err.response.data.message ||
+                  "Error occurred while adding category"}
+              </b>
+            );
+          },
+        }
+      );
     } else {
-      try {
-        formdata.append("id", editId);
-        const res = await makeRequestWithToken(
+      formdata.append("id", editId);
+      toast.promise(
+        makeRequestWithToken(
           "categorydata/edit",
           user.token,
           user.isAdmin,
           "put",
           formdata
-        );
-        console.log(res);
-        setLoading(false);
-        alert(res.data.message);
-      } catch (err) {
-        console.log(err);
-        setLoading(false);
-        alert(err.response.data.message || "Error occurred while editing");
-      }
+        ),
+        {
+          loading: "Saving...",
+          success: (res) => {
+            setLoading(false);
+            setTitle("");
+            setCat("");
+            handleRemove();
+            setEditId("");
+            return <b>{res.data.message}</b>;
+          },
+          error: (err) => {
+            setLoading(false);
+            console.log(err);
+            return (
+              <b>
+                {err.response.data.message ||
+                  "Error occurred while editing category"}
+                ;
+              </b>
+            );
+          },
+        }
+      );
     }
-    setLoading(false);
-    setTitle("");
-    setCat("");
-    handleRemove();
-    setEditId("");
   };
 
   return (
     <>
       <Title>Categories Content</Title>
-      <p style={{ margin: "10px", fontSize: "20px" }}>
-        Only 4 categories are allow.Fill the form to add new Category...
-      </p>
+      <p style={{ margin: "10px", fontSize: "20px" }}>Add more categories...</p>
       <Container>
         <EditBox>
           <h1
@@ -320,13 +345,22 @@ const CategoryPage = () => {
           <DetailsBox>
             <ImgBox>
               <Img>
-                {imageUrl && (
+                {currentImg !== null ? (
+                  <img
+                    src={`${NEW_URL}/${currentImg}`}
+                    alt="Current"
+                    height="200px"
+                    width="200px"
+                  />
+                ) : imageUrl !== null ? (
                   <img
                     src={imageUrl}
                     alt="Selected"
                     height="200px"
                     width="200px"
                   />
+                ) : (
+                  <FaAddressCard size={100} />
                 )}
                 <input
                   type="file"

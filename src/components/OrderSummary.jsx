@@ -6,8 +6,7 @@ const Summary = styled.div`
   border: 1px solid;
   width: 100%;
   margin: 0px 10px;
-  /* margin-top: 35px; */
-  /* height: 50vh; */
+  height: 600px;
   background-color: white;
   border-radius: 10px;
   /* border: 1px solid black; */

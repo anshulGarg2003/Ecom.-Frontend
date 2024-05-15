@@ -3,7 +3,7 @@ import Product from "./Product";
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-const NEW_URL = "http://localhost:5000";
+import { NEW_URL } from "../requestMethos";
 const Container = styled.div`
   display: flex;
   padding: 10px;
@@ -112,10 +112,12 @@ const Products = ({ cat, filters, sort }) => {
         setFilteredProducts((prev) =>
           [...prev].sort((a, b) => a.price - b.price)
         );
-      } else {
+      } else if (sort === "desc") {
         setFilteredProducts((prev) =>
           [...prev].sort((a, b) => b.price - a.price)
         );
+      } else {
+        setFilteredProducts((prev) => [...prev]);
       }
     };
     sortProducts();

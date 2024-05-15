@@ -4,7 +4,7 @@ import { NEW_URL } from "../requestMethos";
 
 const Container = styled.div`
   height: 500px;
-  width: 100%;
+  width: 25%;
   margin: 10px;
   padding: 10px;
   margin-bottom: 15px;
@@ -26,7 +26,7 @@ const ImgBox = styled.div`
 `;
 
 const DetailsBox = styled.div`
-  width: 300px;
+  width: 96%;
   display: flex;
   flex-direction: column;
   flex: 4;

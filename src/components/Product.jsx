@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addToWishlist } from "../redux/apiCall";
 import { NEW_URL } from "../requestMethos";
+import toast from "react-hot-toast";
 
 const Info = styled.div`
   opacity: 0;
@@ -21,7 +22,7 @@ const Info = styled.div`
   left: 0;
   z-index: 2; /* Increase z-index to appear on top of the container */
   transition: all 0.3s ease-in;
-  background-color: #c7c7c7; /* Apply background color directly here */
+  background-color: #0e0e0e; /* Apply background color directly here */
 `;
 
 const IconBox = styled.div`
@@ -50,7 +51,7 @@ const Container = styled.div`
   position: relative;
   overflow: hidden; /* Add overflow: hidden to prevent the Info box from overflowing */
   &:hover ${Info} {
-    opacity: 0.5; /* Increase opacity on hover */
+    opacity: 0.3; /* Increase opacity on hover */
   }
   &:hover ${IconBox} {
     opacity: 1; /* Increase opacity on hover */
@@ -89,12 +90,12 @@ const Product = ({ item }) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const handleClick = () => {
-    if (user !== null) {
+    if (user.username !== null) {
       const userId = user.userId;
       const product = item;
       addToWishlist(dispatch, { userId, product });
     } else {
-      alert("Login First");
+      toast.error("Login First");
     }
   };
   return (

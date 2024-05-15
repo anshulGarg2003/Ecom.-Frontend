@@ -10,6 +10,8 @@ import {
 import { FaAddressCard } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { IoCloseCircleOutline } from "react-icons/io5";
+import toast from "react-hot-toast";
+import { TodaySharp } from "@mui/icons-material";
 
 const Title = styled.h1`
   margin: 5px;
@@ -164,28 +166,34 @@ const ProductEdit = () => {
   const fileInputRef = useRef(null);
 
   const deleteData = async () => {
-    try {
-      console.log(id);
-      const res = await makeRequestWithToken(
+    toast.promise(
+      makeRequestWithToken(
         `products/delete/${id}`,
         user.token,
         user.isAdmin,
         "delete"
-      );
-      console.log(res.data);
-      alert(res.data.message);
-      // setSliderData(res.data);
-      setLoading(false);
-    } catch (err) {
-      alert(err.response.data.message || "Error occurred while editing");
-      console.log(err);
-    }
+      ),
+      {
+        loading: "Saving...",
+        success: (res) => {
+          setLoading(false);
+          return <b>{res.data.message}</b>;
+        },
+        error: (err) => {
+          setLoading(false);
+          console.log(err);
+          return (
+            <b>{err.response.data.message || "Error occurred while editing"}</b>
+          );
+        },
+      }
+    );
   };
 
   const handleDeleteProduct = () => {
     setLoading(true);
     if (id === "") {
-      alert("Please select the product");
+      toast.error("Please select the product");
       setLoading(false);
       return;
     }
@@ -264,13 +272,13 @@ const ProductEdit = () => {
   const handleEditproduct = async () => {
     setLoading(true);
     if (title === "" || about === "" || desc === "" || !price || !stocks) {
-      alert("Fill Up Entries first");
+      toast.error("Fill Up Entries first");
       setLoading(false);
       return;
     }
 
     if (!id) {
-      alert("Select Product Properly");
+      toast.error("Select Product Properly");
       setLoading(false);
       return;
     }
@@ -278,44 +286,51 @@ const ProductEdit = () => {
     const colorsArray = colors.split(",");
     const sizeArray = sizes.split(",");
 
-    try {
-      const formdata = new FormData();
-      formdata.append("title", title);
-      formdata.append("about", about);
-      formdata.append("desc", desc);
-      categoriesArray.forEach((category) => {
-        formdata.append("categories[]", category.trim());
-      });
+    const formdata = new FormData();
+    formdata.append("title", title);
+    formdata.append("about", about);
+    formdata.append("desc", desc);
+    categoriesArray.forEach((category) => {
+      formdata.append("categories[]", category.trim());
+    });
 
-      colorsArray.forEach((color) => {
-        formdata.append("colors[]", color.trim());
-      });
+    colorsArray.forEach((color) => {
+      formdata.append("colors[]", color.trim());
+    });
 
-      sizeArray.forEach((color) => {
-        formdata.append("size[]", color.trim());
-      });
+    sizeArray.forEach((color) => {
+      formdata.append("size[]", color.trim());
+    });
 
-      formdata.append("price", price);
-      formdata.append("inStock", stocks);
-      formdata.append("image", image);
-      formdata.append("id", id);
+    formdata.append("price", price);
+    formdata.append("inStock", stocks);
+    formdata.append("image", image);
+    formdata.append("id", id);
 
-      const res = await makeRequestWithToken(
+    toast.promise(
+      makeRequestWithToken(
         "products/edit",
         user.token,
         user.isAdmin,
         "put",
         formdata
-      );
-
-      setLoading(false);
-      alert(res.data.message);
-      handleReset();
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-      alert(err);
-    }
+      ),
+      {
+        loading: "Saving...",
+        success: (res) => {
+          setLoading(false);
+          handleReset();
+          return <b>{res.data.message}</b>;
+        },
+        error: (err) => {
+          setLoading(false);
+          console.log(err);
+          return (
+            <b>{err.response.data.message || "Error occurred while editing"}</b>
+          );
+        },
+      }
+    );
   };
 
   return (

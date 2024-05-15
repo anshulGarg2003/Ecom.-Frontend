@@ -27,10 +27,10 @@ const Img = styled.img`
 `;
 
 const AllProductShow = ({ cat, filters, sort }) => {
-  console.log(cat, filters, sort);
   const [loading, setLoading] = useState(true);
   const [newproducts, setNewproducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  // const [isDone, setIsDone] = useEffect(true);
 
   useEffect(() => {
     const getProducts = async () => {
@@ -38,13 +38,9 @@ const AllProductShow = ({ cat, filters, sort }) => {
         let url = `${NEW_URL}/api/products`;
         if (cat) {
           url += `?category=${cat}`;
-        } else {
-          url += "/";
         }
         const res = await axios.get(url);
-        console.log(res.data);
         setNewproducts(res.data);
-        setFilteredProducts(res.data);
         setLoading(false);
       } catch (err) {
         console.log(err);
@@ -54,35 +50,43 @@ const AllProductShow = ({ cat, filters, sort }) => {
   }, [cat]);
 
   useEffect(() => {
-    console.log(filters);
-    if (Object.keys(filters).length === 0) {
-      setFilteredProducts(newproducts);
-    } else {
-      setFilteredProducts(
-        filteredProducts.filter((item) =>
+    const filterProducts = () => {
+      if (cat && filters) {
+        // Add null check for filters
+        const filtered = newproducts.filter((item) =>
           Object.entries(filters).every(([key, value]) =>
             item[key].includes(value)
           )
-        )
-      );
-    }
-  }, [newproducts, cat, filters]);
+        );
+        setFilteredProducts(filtered);
+      } else {
+        setFilteredProducts(newproducts);
+      }
+    };
+    filterProducts();
+  }, [cat, filters, loading]);
 
   useEffect(() => {
-    if (sort === "newest") {
-      setFilteredProducts((prev) =>
-        [...prev].sort((a, b) => a.createdAt - b.createdAt)
-      );
-    } else if (sort === "aesc") {
-      setFilteredProducts((prev) =>
-        [...prev].sort((a, b) => a.price - b.price)
-      );
-    } else {
-      setFilteredProducts((prev) =>
-        [...prev].sort((a, b) => b.price - a.price)
-      );
-    }
-  }, [filteredProducts, sort]);
+    const sortProducts = () => {
+      if (sort === "newest") {
+        setFilteredProducts((prev) =>
+          [...prev].sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+          )
+        );
+      } else if (sort === "aesc") {
+        setFilteredProducts((prev) =>
+          [...prev].sort((a, b) => a.price - b.price)
+        );
+      } else if (sort === "desc") {
+        setFilteredProducts((prev) =>
+          [...prev].sort((a, b) => b.price - a.price)
+        );
+      }
+    };
+    sortProducts();
+  }, [sort, loading]);
+
   return (
     <Container>
       {loading === true ? (

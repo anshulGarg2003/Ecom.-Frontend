@@ -5,6 +5,7 @@ import { MdAddHome } from "react-icons/md";
 import { publicRequest } from "../requestMethos";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { addAddress } from "../redux/newCartRedux";
+import toast from "react-hot-toast";
 
 const Heading = styled.div`
   border: 1px solid;
@@ -69,48 +70,49 @@ const Address = () => {
   const dispatch = useDispatch();
   const handleDelete = async (index) => {
     setLoading(true);
-    try {
-      const res = await publicRequest.put(
-        `/users/deleteaddress/${user.userId}`,
-        { index }
-      );
-      alert(res.data.message);
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
-    }
+    toast.promise(
+      publicRequest.put(`/users/deleteaddress/${user.userId}`, { index }),
+      {
+        loading: "Deleting...",
+        success: () => {
+          setLoading(false);
+          return <b>Address is Deleted...</b>;
+        },
+        error: <b>Could not save.</b>,
+      }
+    );
   };
 
   const handleSave = async () => {
     setLoading(true);
     if (addNewAddress === "") {
-      alert("Please Enter Address");
+      toast.error("Please Enter Address");
       setLoading(false);
       return;
     }
-    console.log(pincode);
     if (pincode === "" || pincode.length > 6 || !/^\d+$/.test(pincode)) {
-      alert("Please Enter Correct Pincode");
+      toast.error("Please Enter Correct Pincode");
       setLoading(false);
       return;
     }
 
     const finalAddress = addNewAddress + "," + pincode;
-    try {
-      const formdata = new FormData();
-      formdata.append("newAddress", finalAddress);
-      const res = await publicRequest.post(
-        `/users/addaddress/${user.userId}`,
-        formdata
-      );
-      // console.log(res);
-      alert(res.data.message);
-      setLoading(false);
-      setAdd(false);
-      setAddNewAddress("");
-    } catch (err) {
-      console.log(err);
-    }
+
+    const formdata = new FormData();
+    formdata.append("newAddress", finalAddress);
+    toast.promise(
+      publicRequest.post(`/users/addaddress/${user.userId}`, formdata),
+      {
+        loading: "Saving...",
+        success: () => {
+          setLoading(false);
+          setAdd(false);
+          setAddNewAddress("");
+          return <b>Address is Added..</b>;
+        },
+        error: <b>Could not save.</b>,
+      }
+    );
   };
 
   const handleSelect = (address) => {
@@ -128,8 +130,8 @@ const Address = () => {
       }
     };
 
-    getAddress(); // Call the getAddress function here
-  }, [loading, user.userId]);
+    getAddress();
+  }, [loading]);
 
   return (
     <>

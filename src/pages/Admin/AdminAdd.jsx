@@ -3,6 +3,7 @@ import { styled } from "styled-components";
 import { NEW_URL, makeRequestWithToken } from "../../requestMethos";
 import { FaAddressCard } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
 
 const Title = styled.h1`
   margin: 5px;
@@ -149,23 +150,32 @@ const AdminAdd = () => {
   const handleDelete = async (item) => {
     setLoading(true);
     if (item.firstname === user.firstname) {
-      alert("You can't delete the login admin");
+      toast.error("You can't delete the login admin");
       setLoading(false);
       return;
     }
+
     const answer = prompt("Enter the admin's name you want to delete");
     if (answer === item.firstname) {
-      const res = await makeRequestWithToken(
-        `users/delete/${item._id}`,
-        user.token,
-        user.isAdmin,
-        "delete"
+      toast.promise(
+        makeRequestWithToken(
+          `users/delete/${item._id}`,
+          user.token,
+          user.isAdmin,
+          "delete"
+        ),
+        {
+          loading: "Saving...",
+          success: (res) => {
+            setLoading(false);
+            return <b>{res.data.message}</b>;
+          },
+          error: (err) => {
+            setLoading(false);
+            return <b>Wrong Entry!!</b>;
+          },
+        }
       );
-      alert(res.data.message);
-      setLoading(false);
-    } else {
-      alert("Wrong entry");
-      setLoading(false);
     }
   };
 
@@ -203,49 +213,51 @@ const AdminAdd = () => {
   const handleAddAdmin = async () => {
     setLoading(true);
     if (firstname === "" || username === "" || email === "") {
-      alert("Fill Up Entries first");
+      toast.error("Fill Up Entries first");
       setLoading(false);
       return;
     }
 
     if (password !== Confirmpassword) {
-      alert("Confirm Password is Not Matching ");
+      toast.error("Confirm Password is Not Matching ");
       setLoading(false);
       return;
     }
 
-    try {
-      const formdata = new FormData();
-      formdata.append("firstname", firstname);
-      formdata.append("username", username);
-      formdata.append("email", email);
-      formdata.append("password", password);
-      formdata.append("isAdmin", admin);
-      formdata.append("image", image);
-
-      const res = await makeRequestWithToken(
+    const formdata = new FormData();
+    formdata.append("firstname", firstname);
+    formdata.append("username", username);
+    formdata.append("email", email);
+    formdata.append("password", password);
+    formdata.append("isAdmin", admin);
+    formdata.append("image", image);
+    toast.promise(
+      makeRequestWithToken(
         `auth/register`,
         user.token,
         user.isAdmin,
         "post",
         formdata
-      );
-      // setReturnImage(res.data.image);
-      // console.log(res.image);
-      setLoading(false);
-      alert(res.data.message);
-      setFirstname("");
-      setUsername("");
-      setEmail("");
-      setPassword("");
-      setConfirmPassword("");
-      setImageUrl(null);
-      setShowFileInput(false);
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-      alert(err.response.data);
-    }
+      ),
+      {
+        loading: "Saving...",
+        success: (res) => {
+          setLoading(false);
+          setFirstname("");
+          setUsername("");
+          setEmail("");
+          setPassword("");
+          setConfirmPassword("");
+          setImageUrl(null);
+          setShowFileInput(false);
+          return <b>{res.data.message}</b>;
+        },
+        error: (err) => {
+          setLoading(false);
+          return <b>{err.response.data}</b>;
+        },
+      }
+    );
   };
 
   return (

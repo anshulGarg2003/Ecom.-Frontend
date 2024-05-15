@@ -14,14 +14,13 @@ import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { addToCart, addToUserCart } from "../redux/apiCall";
 import { checkout } from "../redux/newCartRedux";
-import { ToastContainer, toast } from "react-toastify";
 import { NEW_URL, makeRequestWithToken } from "../requestMethos";
+import toast from "react-hot-toast";
 
 const Container = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 100;
-  background-color: #f9f9f9e3;
 `;
 
 const Wrapper = styled.div`
@@ -96,71 +95,75 @@ const Navbar = () => {
   const userId = user.userId;
   const history = useHistory();
   const onlogout = async () => {
-    if (!user.isAdmin) {
-      const token = user.token;
-      const myCartProducts = cart.products;
-      const myCartAmount = cart.amount;
-      var CartId = "";
-      if (cart.CartId !== "") {
-        if (Object.keys(cart.products).length !== 0) {
-          const updateCart = async () => {
-            try {
-              const res = await makeRequestWithToken(
-                `carts/update/${cart.CartId}`,
-                user.token,
-                false,
-                "post",
-                { userId, myCartProducts, myCartAmount }
-              );
-
-              return res.data._id;
-            } catch (err) {
-              console.log(err);
+    try {
+      await toast.promise(
+        (async () => {
+          if (!user.isAdmin) {
+            const token = user.token;
+            const myCartProducts = cart.products;
+            const myCartAmount = cart.amount;
+            let CartId = "";
+            if (cart.CartId !== "") {
+              if (Object.keys(cart.products).length !== 0) {
+                try {
+                  const res = await makeRequestWithToken(
+                    `carts/update/${cart.CartId}`,
+                    user.token,
+                    false,
+                    "post",
+                    { userId, myCartProducts, myCartAmount }
+                  );
+                  CartId = res.data._id;
+                } catch (err) {
+                  console.error("Failed to update cart:", err);
+                  CartId = null;
+                }
+              } else {
+                try {
+                  const res = await makeRequestWithToken(
+                    `carts/delete/${cart.CartId}`,
+                    user.token,
+                    false,
+                    "delete",
+                    { userId }
+                  );
+                  CartId = "";
+                } catch (err) {
+                  console.error("Failed to delete cart:", err);
+                }
+              }
+            } else {
+              if (Object.keys(cart.products).length !== 0) {
+                CartId = await dispatch(
+                  addToCart({ userId, token, myCartProducts, myCartAmount })
+                );
+              }
             }
-          };
-          try {
-            CartId = await updateCart();
-          } catch (err) {
-            console.error("Failed to update cart:", err);
-            CartId = null;
+            console.log(CartId);
+            await dispatch(addToUserCart({ CartId, userId }));
+            await dispatch(checkout());
           }
-        } else {
-          const deleteCart = async () => {
-            try {
-              const res = await makeRequestWithToken(
-                `carts/delete/${cart.CartId}`,
-                user.token,
-                false,
-                "delete",
-                { userId }
-              );
-              return res.data;
-            } catch (err) {
-              console.log(err);
-            }
-          };
-          if (await deleteCart()) {
-            CartId = "";
-          }
+          await dispatch(logout());
+          history.push("/");
+        })(),
+        {
+          loading: "Logging out...",
+          success: "Thank You!!",
+          error: (err) => {
+            console.error("Error while logging out:", err);
+            return <b>Failed to logout. Please try again</b>;
+          },
         }
-      } else {
-        if (Object.keys(cart.products).length !== 0) {
-          CartId = await dispatch(
-            addToCart({ userId, token, myCartProducts, myCartAmount })
-          );
-        }
-      }
-      console.log(CartId);
-      await dispatch(addToUserCart({ CartId, userId }));
-      await dispatch(checkout());
+      );
+    } catch (err) {
+      console.error("Error while logging out:", err);
+      toast.error("Failed to logout. Please try again.");
     }
-    await dispatch(logout());
-    history.push("/");
-    alert("Thank You!! Please Come Again");
   };
+
   const handleCartClick = () => {
     user.firstname === null
-      ? alert("Login First")
+      ? toast.error("Login First")
       : history.push(`/cart/${user.userId}`);
   };
   return (

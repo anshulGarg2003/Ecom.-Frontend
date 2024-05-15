@@ -39,7 +39,7 @@ const OrderList = () => {
   const [orderList, setOrderList] = useState([]);
   const [carts, setCarts] = useState([]);
   const [selectedCart, setSelectedCart] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // Set loading to true initially
 
   const handleViewCart = (cart) => {
     setSelectedCart(cart);
@@ -60,6 +60,8 @@ const OrderList = () => {
         throw err; // Rethrow the error to be caught outside this function
       }
     };
+
+    setLoading(true); // Set loading to true before fetching order data
 
     getOrder()
       .then((res) => {
@@ -87,7 +89,7 @@ const OrderList = () => {
       } catch (err) {
         console.error("Error fetching carts:", err);
       } finally {
-        setLoading(false);
+        setLoading(false); // Set loading to false after fetching cart data
       }
     };
 
@@ -96,9 +98,9 @@ const OrderList = () => {
 
   return (
     <>
-      {carts && carts.length === 0 ? (
+      {loading === true ? (
         <Empty>Please wait While we are fetching...</Empty>
-      ) : loading === true ? (
+      ) : carts.length === 0 ? (
         <>
           <Empty>
             You Haven't place any order!!

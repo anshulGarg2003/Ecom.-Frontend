@@ -8,6 +8,7 @@ const Container = styled.div`
   flex: 1;
   margin: 3px;
   /* height: 60vh; */
+  width: 18vw;
   margin-bottom: 6px;
   position: relative;
   ${mobile({ justifyContent: "center", display: "flex" })}

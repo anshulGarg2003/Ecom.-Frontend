@@ -7,6 +7,7 @@ import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { loginSuccess } from "../redux/userRedux";
+import toast from "react-hot-toast";
 const Title = styled.h1`
   margin: 5px;
   margin-left: 10px;
@@ -123,6 +124,7 @@ const EditUserDetails = () => {
   const fileInputRef = useRef(null);
   const admin = false;
   const [showFileInput, setShowFileInput] = useState(false);
+  const [currentImg, setCurrentImg] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -147,8 +149,7 @@ const EditUserDetails = () => {
     setPassword(user.password);
     setConfirmPassword(user.password);
     setEmail(user.email);
-    setImageUrl(user.ImgUrl);
-    setImage(user.ImgUrl);
+    setCurrentImg(user.ImgUrl);
     setShowFileInput(true);
   }, [user, loading]);
 
@@ -156,6 +157,7 @@ const EditUserDetails = () => {
     const file = e.target.files[0];
     const url = URL.createObjectURL(file);
     setImageUrl(url);
+    setCurrentImg(null);
     setImage(file);
   };
 
@@ -175,41 +177,46 @@ const EditUserDetails = () => {
   const handleEditAdmin = async () => {
     setLoading(true);
     if (firstname === "" || username === "" || email === "") {
-      alert("Fill Up Entries first");
+      toast.error("Fill Up Entries first");
       setLoading(false);
       return;
     }
 
     if (password !== Confirmpassword) {
-      alert("Confirm Password is Not Matching ");
+      toast.error("Confirm Password is Not Matching ");
       setLoading(false);
       return;
     }
 
-    try {
-      const formdata = new FormData();
-      formdata.append("firstname", firstname);
-      formdata.append("username", username);
-      formdata.append("email", email);
-      formdata.append("password", password);
-      formdata.append("isAdmin", admin);
-      formdata.append("image", image);
-      const res = await makeRequestWithToken(
+    const formdata = new FormData();
+    formdata.append("firstname", firstname);
+    formdata.append("username", username);
+    formdata.append("email", email);
+    formdata.append("password", password);
+    formdata.append("isAdmin", admin);
+    formdata.append("image", image);
+
+    toast.promise(
+      makeRequestWithToken(
         `users/${user.userId}`,
         user.token,
         user.isAdmin,
         "put",
         formdata
-      );
-      setLoading(false);
-      dispatch(loginSuccess(res.data.user));
-      console.log(res);
-      alert(res?.data.message);
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-      alert(err.response.data.message);
-    }
+      ),
+      {
+        loading: "Saving...",
+        success: (res) => {
+          setLoading(false);
+          dispatch(loginSuccess(res.data.user));
+          return <b>Save Successfully..</b>;
+        },
+        error: (err) => {
+          setLoading(false);
+          return <b>{err.response.data.message}</b>;
+        },
+      }
+    );
   };
 
   return (
@@ -219,19 +226,28 @@ const EditUserDetails = () => {
         <DetailsBox>
           <ImgBox>
             <Img>
-              {imageUrl && (
+              {currentImg !== null ? (
                 <img
-                  src={`${NEW_URL}/${imageUrl}`}
+                  src={`${NEW_URL}/${currentImg}`}
+                  alt="Current"
+                  height="200px"
+                  width="200px"
+                />
+              ) : imageUrl !== null ? (
+                <img
+                  src={imageUrl}
                   alt="Selected"
                   height="200px"
                   width="200px"
                 />
-              )}
-              {showFileInput === false ? (
-                <FaAddressCard size={100} />
               ) : (
-                <input type="file" onChange={handleImageChange} />
+                <FaAddressCard size={100} />
               )}
+              <input
+                type="file"
+                onChange={handleImageChange}
+                ref={fileInputRef}
+              />
             </Img>
             <div style={{ display: "flex" }}>
               <button

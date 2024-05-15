@@ -8,6 +8,7 @@ import {
   publicRequest,
 } from "../../requestMethos";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
 
 const Title = styled.h1`
   margin: 5px;
@@ -221,11 +222,13 @@ const SliderDataEdit = () => {
           "delete"
         );
         console.log(res.data);
-        alert("delete Successfully");
+        toast.success("delete Successfully");
         // setSliderData(res.data);
         setLoading(false);
       } catch (err) {
-        alert(err.response.data.message || "Error occurred while editing");
+        toast.error(
+          err.response.data.message || "Error occurred while editing"
+        );
         console.log(err);
       }
     };
@@ -235,13 +238,13 @@ const SliderDataEdit = () => {
   const handleAddSlider = async () => {
     setLoading(true);
     if (title === "" || desc === "") {
-      alert("Fill Up Entries first");
+      toast.error("Fill Up Entries first");
       setLoading(false);
       return;
     }
 
     if (!image) {
-      alert("Add the Image");
+      toast.error("Add the Image");
       setLoading(false);
       return;
     }
@@ -253,45 +256,65 @@ const SliderDataEdit = () => {
     formdata.append("image", image);
 
     if (editId === "") {
-      try {
-        const res = await makeRequestWithToken(
+      toast.promise(
+        makeRequestWithToken(
           "sliderdata/add",
           user.token,
           user.isAdmin,
           "post",
           formdata
-        );
-        // const res = await publicRequest.post("", formdata);
-        console.log(res);
-        setLoading(false);
-        alert("Added Successfully");
-      } catch (err) {
-        console.log(err);
-        setLoading(false);
-        alert(err.response.data.message || "Error occurred while editing");
-      }
+        ),
+        {
+          loading: "Saving...",
+          success: (res) => {
+            setLoading(false);
+            setTitle("");
+            setDesc("");
+            handleRemove();
+            return <b>Added Successfully!!</b>;
+          },
+          error: (err) => {
+            setLoading(false);
+            console.log(err);
+            return (
+              <b>
+                {err.response.data.message || "Error occurred while editing"}
+              </b>
+            );
+          },
+        }
+      );
     } else {
-      try {
-        formdata.append("id", editId);
-        const res = await makeRequestWithToken(
+      formdata.append("id", editId);
+      toast.promise(
+        makeRequestWithToken(
           "sliderdata/edit",
           user.token,
           user.isAdmin,
           "put",
           formdata
-        );
-        console.log(res);
-        setLoading(false);
-        alert("Edited Successfully");
-      } catch (err) {
-        console.log(err);
-        setLoading(false);
-        alert(err.response.data.message || "Error occurred while editing");
-      }
+        ),
+        {
+          loading: "Saving...",
+          success: (res) => {
+            setLoading(false);
+            setTitle("");
+            setDesc("");
+            handleRemove();
+            return <b>Edited Successfully!!</b>;
+          },
+          error: (err) => {
+            setLoading(false);
+            console.log(err);
+            return (
+              <b>
+                {err.response.data.message || "Error occurred while editing"}
+              </b>
+            );
+          },
+        }
+      );
     }
-    setTitle("");
-    setDesc("");
-    handleRemove();
   };
 
   return (

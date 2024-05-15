@@ -6,6 +6,7 @@ import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { loginSuccess } from "../../redux/userRedux";
+import toast from "react-hot-toast";
 
 const Title = styled.h1`
   margin: 5px;
@@ -176,13 +177,13 @@ const EditAdminDetails = () => {
   const handleEditAdmin = async () => {
     setLoading(true);
     if (firstname === "" || username === "" || email === "") {
-      alert("Fill Up Entries first");
+      toast.error("Fill Up Entries first");
       setLoading(false);
       return;
     }
 
     if (password !== Confirmpassword) {
-      alert("Confirm Password is Not Matching ");
+      toast.error("Confirm Password is Not Matching ");
       setLoading(false);
       return;
     }
@@ -205,11 +206,11 @@ const EditAdminDetails = () => {
       setLoading(false);
       dispatch(loginSuccess(res.data.user));
       console.log(res);
-      alert(res?.data.message);
+      toast.success(res?.data.message);
     } catch (err) {
       console.log(err);
       setLoading(false);
-      alert(err.response.data.message);
+      toast.error(err.response.data.message);
     }
   };
 

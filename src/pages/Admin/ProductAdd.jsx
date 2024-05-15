@@ -3,6 +3,7 @@ import { styled } from "styled-components";
 import { makeRequestWithToken } from "../../requestMethos";
 import { FaAddressCard } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
 
 const Title = styled.h1`
   margin: 5px;
@@ -120,7 +121,7 @@ const ProductAdd = () => {
   const [image, setImage] = useState("");
   const [desc, setDesc] = useState("");
   const [price, setPrice] = useState(0);
-  const [stocks, setStocks] = useState(0);
+  const [stocks, setStocks] = useState();
   const [loading, setLoading] = useState(false);
   const admin = true;
   const user = useSelector((state) => state.user);
@@ -144,68 +145,72 @@ const ProductAdd = () => {
   const handleAddproduct = async () => {
     setLoading(true);
     if (title === "" || about === "" || desc === "" || !price || !stocks) {
-      alert("Fill Up Entries first");
+      toast.error("Fill Up Entries first");
       setLoading(false);
       return;
     }
 
     if (!image) {
-      alert("Add the Image");
+      toast.error("Add the Image");
       setLoading(false);
       return;
     }
     const categoriesArray = categories.split(",");
     const colorsArray = colors.split(",");
-    const sizeArray = colors.split(",");
+    const sizeArray = sizes.split(",");
+    const formdata = new FormData();
+    formdata.append("title", title);
+    formdata.append("about", about);
+    formdata.append("desc", desc);
+    categoriesArray.forEach((category) => {
+      formdata.append("categories[]", category.trim());
+    });
 
-    try {
-      const formdata = new FormData();
-      formdata.append("title", title);
-      formdata.append("about", about);
-      formdata.append("desc", desc);
-      categoriesArray.forEach((category) => {
-        formdata.append("categories[]", category.trim());
-      });
+    colorsArray.forEach((color) => {
+      formdata.append("colors[]", color.trim());
+    });
 
-      colorsArray.forEach((color) => {
-        formdata.append("colors[]", color.trim());
-      });
+    sizeArray.forEach((size) => {
+      formdata.append("size[]", size.trim());
+    });
 
-      sizeArray.forEach((color) => {
-        formdata.append("size[]", color.trim());
-      });
+    formdata.append("price", price);
+    formdata.append("inStock", stocks);
+    formdata.append("image", image);
+    formdata.append("isAdmin", admin);
 
-      formdata.append("price", price);
-      formdata.append("inStock", stocks);
-      formdata.append("image", image);
-      formdata.append("isAdmin", admin);
-
-      const res = await makeRequestWithToken(
+    toast.promise(
+      makeRequestWithToken(
         "products/add",
         user.token,
         user.isAdmin,
         "post",
         formdata
-      );
-      // setReturnImage(res.data.image);
-      console.log(res.data);
-      setLoading(false);
-      alert("Added Successfully");
-      setTitle("");
-      setAbout("");
-      setDesc("");
-      setCategories("");
-      setColors("");
-      setSizes("");
-      setStocks(0);
-      setPrice(0);
-      setImage(null);
-      setImageUrl(null);
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-      alert(err);
-    }
+      ),
+      {
+        loading: "Saving...",
+        success: (res) => {
+          setLoading(false);
+          setLoading(false);
+          setTitle("");
+          setAbout("");
+          setDesc("");
+          setCategories("");
+          setColors("");
+          setSizes("");
+          setStocks(0);
+          setPrice(0);
+          setImage(null);
+          setImageUrl(null);
+          return <b>Added Successfully</b>;
+        },
+        error: (err) => {
+          setLoading(false);
+          console.log(err);
+          return <b>{err}</b>;
+        },
+      }
+    );
   };
 
   return (
@@ -329,14 +334,13 @@ const ProductAdd = () => {
                     onChange={(e) => setPrice(e.target.value)}
                   />
                 </InputBox>
-                <InputBox>
-                  <p style={{ padding: "3px", fontSize: "20px" }}>Stocks:</p>
-                  <Input
-                    value={stocks}
-                    type="number"
-                    onChange={(e) => setStocks(e.target.value)}
-                  />
-                </InputBox>
+                <p style={{ padding: "3px", fontSize: "20px" }}>Stocks:</p>
+                <Input
+                  value={stocks}
+                  type="number"
+                  placeholder="0"
+                  onChange={(e) => setStocks(e.target.value)}
+                />
               </div>
             </Form>
           </InfoBox>

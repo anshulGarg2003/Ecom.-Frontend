@@ -33,7 +33,10 @@ function Home() {
         <Button onClick={() => history.push("/products/")}>More...</Button>
       </Title>
       <Products />
-      <Title>Trending Products</Title>
+      <Title>
+        <p>Trending Products</p>{" "}
+        <Button onClick={() => history.push("/products/")}>More...</Button>
+      </Title>
       <Products sort={"newest"} />
       <NewsLetter />
       <Footer />

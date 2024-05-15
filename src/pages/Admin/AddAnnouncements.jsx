@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { makeRequestWithToken, publicRequest } from "../../requestMethos";
+import toast from "react-hot-toast";
 
 const Title = styled.h1`
   margin: 5px;
@@ -95,29 +96,33 @@ const AddAnnouncements = () => {
   const handleSave = async () => {
     setLoading(true);
     if (announce === "") {
-      alert("Fill Up Entries first");
+      toast.error("Fill Up Entries first");
       setLoading(false);
       return;
     }
 
-    try {
-      const formdata = new FormData();
-      formdata.append("announce", announce);
-      const res = await makeRequestWithToken(
+    const formdata = new FormData();
+    formdata.append("announce", announce);
+    toast.promise(
+      makeRequestWithToken(
         `announcement/add`,
         user.token,
         user.isAdmin,
         "post",
         formdata
-      );
-      setLoading(false);
-      console.log(res);
-      alert(res?.data.message);
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-      alert(err.response.data.message);
-    }
+      ),
+      {
+        loading: "Saving...",
+        success: () => {
+          setLoading(false);
+          return <b>Announcement has change..</b>;
+        },
+        error: (err) => {
+          setLoading(false);
+          return <b>{err.response.data.message}</b>;
+        },
+      }
+    );
   };
 
   return (

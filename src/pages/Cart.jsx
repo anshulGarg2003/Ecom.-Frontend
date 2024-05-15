@@ -24,6 +24,7 @@ import Address from "../components/Address";
 import OrderSummary from "../components/OrderSummary";
 import CartSummary from "../components/CartSummary";
 import Payment from "../components/Payment";
+import toast from "react-hot-toast";
 const Container = styled.div`
   position: relative;
   background-color: #fff;
@@ -154,12 +155,12 @@ const Cart = () => {
     const myCartAmount = cart.amount;
     const myaddress = cart.address;
     if (myaddress === "") {
-      alert("Please Select address ");
+      toast.error("Please Select address ");
       return;
     }
     const mymode = cart.mode;
     if (mymode === "") {
-      alert("Please select payment mode");
+      toast.error("Please select payment mode");
       return;
     }
     var CartId = "";

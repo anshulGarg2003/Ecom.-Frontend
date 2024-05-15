@@ -3,6 +3,7 @@ import { styled } from "styled-components";
 import { useEffect, useState } from "react";
 import { mobile } from "../responsive";
 import { NEW_URL, publicRequest } from "../requestMethos";
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
 const Container = styled.div`
   margin-top: 15px;
   height: 80vh;
@@ -99,6 +100,7 @@ const Slider = () => {
   const [slideIndex, setSlideIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [sliderdata, setsliderdata] = useState([]);
+  const history = useHistory();
   const handleClick = (direction) => {
     if (direction === "left") {
       setSlideIndex(slideIndex > 0 ? slideIndex - 1 : sliderdata.length - 1);
@@ -113,7 +115,6 @@ const Slider = () => {
     const getData = async () => {
       try {
         const res = await publicRequest.get("/sliderdata");
-        // console.log(res.data);
         setsliderdata(res.data);
         setLoading(false);
       } catch (err) {
@@ -121,14 +122,17 @@ const Slider = () => {
       }
     };
     getData();
+  }, []);
+
+  useEffect(() => {
     const interval = setInterval(() => {
       setSlideIndex((prevIndex) =>
-        prevIndex < sliderdata.length ? prevIndex + 1 : 0
+        prevIndex < sliderdata.length - 1 ? prevIndex + 1 : 0
       );
     }, 5000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [sliderdata]);
 
   return (
     <Container>
@@ -161,7 +165,9 @@ const Slider = () => {
                 <InfoContainer>
                   <Title>{item.title}</Title>
                   <Desc>{item.desc}</Desc>
-                  <Button>Visit Now</Button>
+                  <Button onClick={() => history.push("/products/")}>
+                    Visit Now
+                  </Button>
                 </InfoContainer>
               </Slide>
             ))}

@@ -14,6 +14,7 @@ import { addToWishlist } from "../redux/apiCall";
 import { useHistory } from "react-router-dom";
 import { addSelectProduct } from "../redux/productRedux";
 import Products from "../components/Products";
+import toast from "react-hot-toast";
 
 const Container = styled.div``;
 const Wrapper = styled.div`
@@ -236,7 +237,7 @@ const Product = () => {
       );
 
       if (quantity > product.inStock) {
-        alert("We are running sort of stocks...");
+        toast.error("We are running sort of stocks...");
         setQuantity(product.inStock);
       }
 
@@ -245,10 +246,10 @@ const Product = () => {
         dispatch(addSelectProduct({ product, quantity, colour, size, price }));
         setIsClick(true);
       } else {
-        alert("This product is already in your cart");
+        toast.error("This product is already in your cart");
       }
     } else {
-      alert("Select Size and Colour");
+      toast.success("Select Size and Colour");
     }
   };
   useEffect(() => {
@@ -290,13 +291,11 @@ const Product = () => {
               <Desc>{product.about}</Desc>
               <Price>
                 ${product.price}
-                {product.inStock <= 5 ? (
-                  <Stock>Hurray Up!!! Only {product.inStock} left 😯</Stock>
-                ) : (
-                  product.inStock === 0 && (
-                    <Stock>Sorr😞y We are out of stock</Stock>
-                  )
-                )}
+                {product.inStock === 0 ? (
+                  <Stock>Sorry😞 We are out of stock</Stock>
+                ) : product.inStock <= 5 ? (
+                  <Stock>Hurry Up!!! Only {product.inStock} left 😯</Stock>
+                ) : null}
               </Price>
               <FilterContainer>
                 <Filter>
@@ -374,8 +373,9 @@ const Product = () => {
         )}
       </Wrapper>
       {product.categories && <Title>More of {product.categories[0]}...</Title>}
-      {console.log(product.categories)}
       {product.categories && <Products cat={product.categories[0]} />}
+      {product.categories && <Title>More of {product.categories[1]}...</Title>}
+      {product.categories && <Products cat={product.categories[1]} />}
       <Title>Trending Products</Title>
       <Products sort={"newest"} />
       <NewsLetter />

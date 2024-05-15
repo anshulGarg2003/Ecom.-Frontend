@@ -8,6 +8,7 @@ import Navbar from "../components/Navbar";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { FaAddressCard } from "react-icons/fa";
 import { publicRequest } from "../requestMethos";
+import toast from "react-hot-toast";
 
 const Container = styled.div`
   display: flex;
@@ -191,10 +192,11 @@ const Register = () => {
           isAdmin: admin,
         });
         setLoading(false);
-        alert(res);
+        toast.success("Register Successfully");
         history.push("/");
       } else {
-        alert(res);
+        setLoading(false);
+        toast.error(res);
       }
     } catch (err) {
       console.log(err);
