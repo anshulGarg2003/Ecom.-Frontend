@@ -15,7 +15,6 @@ import Success from "./pages/Success";
 import Admin from "./pages/Admin";
 import UserPage from "./pages/UserPage";
 // dotenv.config();
-import "react-toastify/dist/ReactToastify.css";
 import ErrorPage from "./pages/ErrorPage";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import { Toaster } from "react-hot-toast";
