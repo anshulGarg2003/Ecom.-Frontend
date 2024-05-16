@@ -1,5 +1,4 @@
 import React from "react";
-import { MdCategory } from "react-icons/md";
 import styled from "styled-components";
 import { BsSliders } from "react-icons/bs";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";

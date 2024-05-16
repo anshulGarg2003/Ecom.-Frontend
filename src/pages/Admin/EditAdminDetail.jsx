@@ -122,7 +122,6 @@ const EditAdminDetails = () => {
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
   const admin = true;
-  const [showFileInput, setShowFileInput] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [currentImg, setCurrentImg] = useState(null);
   const user = useSelector((state) => state.user);
@@ -149,8 +148,6 @@ const EditAdminDetails = () => {
     setConfirmPassword(user.password);
     setEmail(user.email);
     setImageUrl(user.ImgUrl);
-    setCurrentImg(user.ImgUrl);
-    setShowFileInput(true);
   }, [user, loading]);
 
   const handleImageChange = async (e) => {
@@ -168,10 +165,6 @@ const EditAdminDetails = () => {
 
     setImageUrl(null);
     setImage(null);
-  };
-
-  const handleAddButtonClick = () => {
-    setShowFileInput(true);
   };
 
   const handleEditAdmin = async () => {

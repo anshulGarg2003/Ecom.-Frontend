@@ -120,7 +120,7 @@ const Navbar = () => {
                 }
               } else {
                 try {
-                  const res = await makeRequestWithToken(
+                  await makeRequestWithToken(
                     `carts/delete/${cart.CartId}`,
                     user.token,
                     false,

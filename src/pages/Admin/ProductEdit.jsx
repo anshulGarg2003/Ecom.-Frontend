@@ -11,7 +11,6 @@ import { FaAddressCard } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import toast from "react-hot-toast";
-import { TodaySharp } from "@mui/icons-material";
 
 const Title = styled.h1`
   margin: 5px;

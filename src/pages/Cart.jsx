@@ -13,12 +13,7 @@ import { Link } from "react-router-dom";
 import { TbChecklist } from "react-icons/tb";
 import { IoHomeOutline } from "react-icons/io5";
 import { BsCashCoin } from "react-icons/bs";
-import {
-  addToCart,
-  addToOrder,
-  addToUserCart,
-  addToUserOrder,
-} from "../redux/apiCall";
+import { addToCart, addToUserOrder } from "../redux/apiCall";
 import { publicRequest } from "../requestMethos";
 import Address from "../components/Address";
 import OrderSummary from "../components/OrderSummary";
@@ -182,7 +177,7 @@ const Cart = () => {
     await dispatch(addToUserOrder({ myUserId: userId, OrderId: CartId }));
 
     try {
-      const res = await publicRequest.put("/products/updatestock", {
+      await publicRequest.put("/products/updatestock", {
         myCartProducts,
       });
     } catch (err) {

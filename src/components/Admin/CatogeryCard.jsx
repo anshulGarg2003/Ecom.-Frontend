@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { MdCategory } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 
 const Container = styled.div`

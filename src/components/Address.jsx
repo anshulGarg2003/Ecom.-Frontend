@@ -131,7 +131,7 @@ const Address = () => {
     };
 
     getAddress();
-  }, [loading]);
+  }, [loading,user.userId]);
 
   return (
     <>
