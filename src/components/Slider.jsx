@@ -3,6 +3,7 @@ import { styled } from "styled-components";
 import { useEffect, useState } from "react";
 import { mobile } from "../responsive";
 import { NEW_URL, publicRequest } from "../requestMethos";
+// import { makeRequestWithToken } from "../requestMethos";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 const Container = styled.div`
   margin-top: 15px;
