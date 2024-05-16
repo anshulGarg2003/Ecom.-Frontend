@@ -1,6 +1,7 @@
 import React from "react";
 import { styled } from "styled-components";
 const Summary = styled.div`
+  height: 600px;
   display: flex;
   flex-direction: column;
   border: 1px solid;

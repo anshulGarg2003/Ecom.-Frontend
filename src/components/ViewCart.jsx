@@ -30,7 +30,6 @@ const Info = styled.div`
   padding-right: 10px;
 `;
 
-
 const ProductImg = styled.div`
   flex: 1;
   height: 90%;
@@ -157,6 +156,7 @@ const Amount = styled.span`
 `;
 
 const Summary = styled.div`
+  height: 600px;
   flex: 2;
   display: flex;
   flex-direction: column;
