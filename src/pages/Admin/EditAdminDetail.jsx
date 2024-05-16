@@ -254,7 +254,6 @@ const EditAdminDetails = () => {
             </Img>
             <div style={{ display: "flex" }}>
               <button
-                onClick={handleAddButtonClick}
                 style={{
                   fontSize: "20px",
                   padding: "5px",

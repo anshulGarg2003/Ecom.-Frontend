@@ -168,6 +168,7 @@ const EditUserDetails = () => {
     setImage(null);
   };
 
+
   const handleEditAdmin = async () => {
     setLoading(true);
     if (firstname === "" || username === "" || email === "") {
@@ -245,7 +246,6 @@ const EditUserDetails = () => {
             </Img>
             <div style={{ display: "flex" }}>
               <button
-                onClick={handleAddButtonClick}
                 style={{
                   fontSize: "20px",
                   padding: "5px",
