@@ -19,6 +19,7 @@ import Address from "../components/Address";
 import OrderSummary from "../components/OrderSummary";
 import CartSummary from "../components/CartSummary";
 import Payment from "../components/Payment";
+import { BiHappyBeaming } from "react-icons/bi";
 import toast from "react-hot-toast";
 const Container = styled.div`
   position: relative;
@@ -73,6 +74,7 @@ const Bottom = styled.div`
 `;
 
 const Empty = styled.div`
+  font-size: 30px;
   display: flex;
   height: 50vh;
   text-align: center;
@@ -245,9 +247,11 @@ const Cart = () => {
         {cart.products && cart.products.length === 0 ? (
           <>
             <Empty>
-              Your Cart is Empty!!
+              Your shopping bag is Empty!!
               <br />
               Shop Now!!
+              <br />
+              <BiHappyBeaming size={50} />
             </Empty>
           </>
         ) : (
