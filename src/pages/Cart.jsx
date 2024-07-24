@@ -251,7 +251,9 @@ const Cart = () => {
               <br />
               Shop Now!!
               <br />
-              <BiHappyBeaming size={50} />
+              <p>
+                <BiHappyBeaming size={50} />
+              </p>
             </Empty>
           </>
         ) : (

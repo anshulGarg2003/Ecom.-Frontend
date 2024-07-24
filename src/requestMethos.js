@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // export const NEW_URL = "http://localhost:5000";
-export const NEW_URL = "https://ecom-backend-pi1p.onrender.com";
+export const NEW_URL = "https://ecom-backend-chi-two.vercel.app/";
 const Base_URL = `${NEW_URL}/api`;
 // Parse the admin string only if it's not null or undefinedDs
 
